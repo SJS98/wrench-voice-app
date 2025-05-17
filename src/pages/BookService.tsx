@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
@@ -8,9 +8,11 @@ import { Calendar } from '@/components/ui/calendar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ServiceCard, { Service } from '@/components/service/ServiceCard';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, Car, Clock, CreditCard } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, CreditCard } from 'lucide-react';
 import { useUserAuth } from '@/contexts/UserAuthContext';
 import VoiceCommandButton from '@/components/voice/VoiceCommandButton';
+import { VehicleType, vehicleTypeNames } from '@/types/vehicles';
+import VehicleIcon from '@/components/vehicles/VehicleIcon';
 
 // Mock garage data
 const mockGarageDetails = {
@@ -22,9 +24,10 @@ const mockGarageDetails = {
   rating: 4.7,
   reviewCount: 124,
   imageUrl: 'https://images.unsplash.com/photo-1617886903355-df116483a857?q=80&w=600&auto=format&fit=crop',
+  supportedVehicles: ['car', 'bike', 'auto-rickshaw'] as VehicleType[]
 };
 
-// Mock services
+// Mock services with vehicle compatibility
 const mockServices: Service[] = [
   {
     id: '1',
@@ -32,23 +35,26 @@ const mockServices: Service[] = [
     description: 'Oil change, filter replacement, and basic inspection',
     price: 2499,
     duration: '2 hours',
-    iconUrl: '/placeholder.svg'
+    iconUrl: '/placeholder.svg',
+    compatibleVehicles: ['car', 'bike', 'auto-rickshaw']
   },
   {
     id: '2',
-    name: 'Full Car Wash',
+    name: 'Full Wash',
     description: 'Interior & exterior cleaning with polish',
     price: 999,
     duration: '1 hour',
-    iconUrl: '/placeholder.svg'
+    iconUrl: '/placeholder.svg',
+    compatibleVehicles: ['car', 'bike', 'auto-rickshaw', 'truck', 'bus']
   },
   {
     id: '3',
-    name: 'Tire Rotation',
+    name: 'Tire Service',
     description: 'Rotate tires for even wear and alignment check',
     price: 799,
     duration: '45 min',
-    iconUrl: '/placeholder.svg'
+    iconUrl: '/placeholder.svg',
+    compatibleVehicles: ['car', 'truck', 'bus']
   },
   {
     id: '4',
@@ -56,14 +62,36 @@ const mockServices: Service[] = [
     description: 'Complete AC system service and gas refill',
     price: 3999,
     duration: '3 hours',
-    iconUrl: '/placeholder.svg'
+    iconUrl: '/placeholder.svg',
+    compatibleVehicles: ['car', 'bus', 'truck']
+  },
+  {
+    id: '5',
+    name: 'Chain Lubrication',
+    description: 'Clean and lubricate chain for smooth operation',
+    price: 299,
+    duration: '30 min',
+    iconUrl: '/placeholder.svg',
+    compatibleVehicles: ['bike', 'bicycle']
+  },
+  {
+    id: '6',
+    name: 'Gear Adjustment',
+    description: 'Fine tune gear shifting mechanism',
+    price: 499,
+    duration: '45 min',
+    iconUrl: '/placeholder.svg',
+    compatibleVehicles: ['bike', 'bicycle']
   }
 ];
 
-// Mock vehicles
+// Mock vehicles with all types
 const mockVehicles = [
-  { id: '1', name: 'Honda City', regNumber: 'KA05AB1234', year: 2019 },
-  { id: '2', name: 'Maruti Swift', regNumber: 'MH01CD5678', year: 2021 }
+  { id: '1', name: 'Honda City', regNumber: 'KA05AB1234', year: 2019, type: 'car' as VehicleType },
+  { id: '2', name: 'Maruti Swift', regNumber: 'MH01CD5678', year: 2021, type: 'car' as VehicleType },
+  { id: '3', name: 'Hero Splendor', regNumber: 'DL05XY9876', year: 2022, type: 'bike' as VehicleType },
+  { id: '4', name: 'Tata Ace', regNumber: 'TN01ZZ1122', year: 2020, type: 'truck' as VehicleType },
+  { id: '5', name: 'My Bicycle', regNumber: 'NA', year: 2023, type: 'bicycle' as VehicleType }
 ];
 
 // Available time slots
@@ -75,14 +103,32 @@ const timeSlots = [
 const BookServicePage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const { isAuthenticated } = useUserAuth();
+  
+  const queryParams = new URLSearchParams(location.search);
+  const vehicleIdFromParams = queryParams.get('vehicleId');
+  const vehicleTypeFromParams = queryParams.get('vehicleType') as VehicleType | null;
 
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [selectedVehicle, setSelectedVehicle] = useState(mockVehicles[0].id);
+  const [selectedVehicle, setSelectedVehicle] = useState(
+    vehicleIdFromParams || mockVehicles[0].id
+  );
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('services');
+
+  // Get the current vehicle object
+  const currentVehicle = mockVehicles.find(v => v.id === selectedVehicle);
+  
+  // Filter services based on vehicle type and garage supported vehicles
+  const filteredServices = mockServices.filter(service => 
+    (!service.compatibleVehicles || 
+    (currentVehicle && service.compatibleVehicles.includes(currentVehicle.type))) &&
+    (!mockGarageDetails.supportedVehicles || 
+    (currentVehicle && mockGarageDetails.supportedVehicles.includes(currentVehicle.type)))
+  );
 
   // Fetch garage data on component mount
   useEffect(() => {
@@ -94,8 +140,17 @@ const BookServicePage = () => {
         variant: "destructive"
       });
     }
-    // In a real app, we would fetch the garage data based on the ID
-  }, [id, navigate, toast]);
+    
+    // Pre-select vehicle based on URL params if available
+    if (vehicleIdFromParams) {
+      setSelectedVehicle(vehicleIdFromParams);
+    }
+  }, [id, navigate, toast, vehicleIdFromParams]);
+
+  // Reset selected services when vehicle changes
+  useEffect(() => {
+    setSelectedServices([]);
+  }, [selectedVehicle]);
 
   const toggleServiceSelection = (serviceId: string) => {
     setSelectedServices(prev => 
@@ -107,11 +162,28 @@ const BookServicePage = () => {
 
   const getTotalPrice = () => {
     let total = 0;
-    mockServices.forEach(service => {
+    
+    // Get the vehicle type for price adjustments
+    const vehicleType = currentVehicle?.type;
+    
+    // Define price multipliers based on vehicle type
+    const priceMultipliers: Record<VehicleType, number> = {
+      'car': 1,
+      'bike': 0.6,
+      'truck': 2.5,
+      'bus': 3,
+      'auto-rickshaw': 0.8,
+      'bicycle': 0.3
+    };
+
+    filteredServices.forEach(service => {
       if (selectedServices.includes(service.id)) {
-        total += service.price;
+        // Apply price multiplier based on vehicle type
+        const multiplier = vehicleType ? priceMultipliers[vehicleType] : 1;
+        total += Math.round(service.price * multiplier);
       }
     });
+    
     return total;
   };
 
@@ -149,12 +221,33 @@ const BookServicePage = () => {
     });
   };
 
+  // Check if the selected vehicle is supported by this garage
+  const isVehicleSupported = !currentVehicle || 
+    !mockGarageDetails.supportedVehicles || 
+    mockGarageDetails.supportedVehicles.includes(currentVehicle.type);
+
   return (
     <AppLayout title="Book Service" showBackButton>
       <div className="p-4 pb-32">
         <div className="mb-6">
           <h2 className="text-xl font-bold">Book at {mockGarageDetails.name}</h2>
           <p className="text-muted-foreground">{mockGarageDetails.address}</p>
+          
+          {!isVehicleSupported && currentVehicle && (
+            <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+              <strong>Warning:</strong> This garage doesn't support {vehicleTypeNames[currentVehicle.type]} services. 
+              Please choose a different vehicle or garage.
+            </div>
+          )}
+          
+          <div className="mt-3 flex flex-wrap gap-2">
+            {mockGarageDetails.supportedVehicles?.map(type => (
+              <div key={type} className="flex items-center gap-1 text-xs bg-garage-purple/10 px-2 py-1 rounded">
+                <VehicleIcon type={type} className="h-3 w-3 text-garage-purple" />
+                <span className="text-garage-purple">{vehicleTypeNames[type]}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         <Tabs defaultValue="services" value={activeTab} onValueChange={setActiveTab}>
@@ -165,15 +258,30 @@ const BookServicePage = () => {
           </TabsList>
 
           <TabsContent value="services" className="space-y-4">
-            <h3 className="text-lg font-medium mb-3">Select Services</h3>
-            {mockServices.map((service) => (
-              <ServiceCard
-                key={service.id}
-                service={service}
-                selected={selectedServices.includes(service.id)}
-                onClick={() => toggleServiceSelection(service.id)}
-              />
-            ))}
+            <h3 className="text-lg font-medium mb-3">
+              Select Services
+              {currentVehicle && (
+                <span className="text-sm ml-2 text-muted-foreground">
+                  for {vehicleTypeNames[currentVehicle.type]}
+                </span>
+              )}
+            </h3>
+            
+            {filteredServices.length > 0 ? (
+              filteredServices.map((service) => (
+                <ServiceCard
+                  key={service.id}
+                  service={service}
+                  selected={selectedServices.includes(service.id)}
+                  onClick={() => toggleServiceSelection(service.id)}
+                  selectedVehicleType={currentVehicle?.type}
+                />
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No services available for this vehicle type</p>
+              </div>
+            )}
 
             <div className="flex justify-end mt-6">
               <Button 
@@ -190,27 +298,39 @@ const BookServicePage = () => {
             <h3 className="text-lg font-medium mb-4">Select Vehicle</h3>
 
             <div className="space-y-4 mb-6">
-              {mockVehicles.map((vehicle) => (
-                <div 
-                  key={vehicle.id}
-                  onClick={() => setSelectedVehicle(vehicle.id)}
-                  className={`border rounded-lg p-4 cursor-pointer ${
-                    selectedVehicle === vehicle.id 
-                      ? 'border-garage-purple bg-garage-purple/5' 
-                      : 'border-gray-200'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="bg-gray-100 p-3 rounded-full">
-                      <Car className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium">{vehicle.name}</h4>
-                      <p className="text-sm text-muted-foreground">{vehicle.regNumber} • {vehicle.year}</p>
+              {mockVehicles
+                // Filter vehicles based on garage supported types
+                .filter(vehicle => !mockGarageDetails.supportedVehicles || 
+                  mockGarageDetails.supportedVehicles.includes(vehicle.type))
+                .map((vehicle) => (
+                  <div 
+                    key={vehicle.id}
+                    onClick={() => setSelectedVehicle(vehicle.id)}
+                    className={`border rounded-lg p-4 cursor-pointer ${
+                      selectedVehicle === vehicle.id 
+                        ? 'border-garage-purple bg-garage-purple/5' 
+                        : 'border-gray-200'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="bg-gray-100 p-3 rounded-full">
+                        <VehicleIcon type={vehicle.type} className="h-6 w-6" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium">{vehicle.name}</h4>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <span>{vehicle.regNumber}</span>
+                          {vehicle.regNumber !== 'NA' && <span> • </span>}
+                          <span>{vehicle.year}</span>
+                          <span className="ml-2 px-2 py-0.5 text-xs bg-gray-100 rounded-full">
+                            {vehicleTypeNames[vehicle.type]}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              }
             </div>
 
             <div className="flex justify-between mt-6">
@@ -271,7 +391,7 @@ const BookServicePage = () => {
               </Button>
               <Button 
                 onClick={handleBookService} 
-                disabled={!selectedDate || !selectedTimeSlot || selectedServices.length === 0}
+                disabled={!selectedDate || !selectedTimeSlot || selectedServices.length === 0 || !isVehicleSupported}
                 className="bg-garage-purple hover:bg-garage-purple/90"
               >
                 Proceed to Checkout
@@ -288,9 +408,10 @@ const BookServicePage = () => {
             </div>
             <div className="flex gap-2">
               <div className="flex-1">
-                {selectedVehicle && (
+                {currentVehicle && (
                   <span className="text-xs text-muted-foreground">
-                    {mockVehicles.find(v => v.id === selectedVehicle)?.name} • 
+                    {currentVehicle.name} • 
+                    {vehicleTypeNames[currentVehicle.type]} • 
                     {selectedDate && format(selectedDate, ' dd MMM')}{selectedTimeSlot ? `, ${selectedTimeSlot}` : ''}
                   </span>
                 )}

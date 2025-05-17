@@ -7,7 +7,6 @@ import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { 
   Calendar, 
-  Car, 
   Clock, 
   CreditCard, 
   Wallet, 
@@ -15,6 +14,8 @@ import {
   CircleDollarSign
 } from 'lucide-react';
 import { useUserAuth } from '@/contexts/UserAuthContext';
+import { VehicleType, vehicleTypeNames } from '@/types/vehicles';
+import VehicleIcon from '@/components/vehicles/VehicleIcon';
 
 interface BookingState {
   garageId: string;
@@ -25,6 +26,7 @@ interface BookingState {
     name: string;
     regNumber: string;
     year: number;
+    type: VehicleType;
   };
   date: Date;
   timeSlot: string;
@@ -37,6 +39,8 @@ const mockServicesData = {
   '2': { name: 'Full Car Wash', price: 999 },
   '3': { name: 'Tire Rotation', price: 799 },
   '4': { name: 'AC Service', price: 3999 },
+  '5': { name: 'Chain Lubrication', price: 299 },
+  '6': { name: 'Gear Adjustment', price: 499 },
 };
 
 // Payment methods
@@ -111,11 +115,18 @@ const CheckoutPage = () => {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <div className="bg-garage-purple/10 p-2 rounded-full">
-                <Car className="h-4 w-4 text-garage-purple" />
+                <VehicleIcon type={bookingState.vehicle.type} className="h-4 w-4 text-garage-purple" />
               </div>
               <div>
-                <p className="text-sm font-medium">{bookingState.vehicle.name}</p>
-                <p className="text-xs text-muted-foreground">{bookingState.vehicle.regNumber}</p>
+                <div className="flex items-center">
+                  <p className="text-sm font-medium">{bookingState.vehicle.name}</p>
+                  <span className="ml-2 text-xs bg-garage-purple/10 px-2 py-0.5 rounded-full text-garage-purple">
+                    {vehicleTypeNames[bookingState.vehicle.type]}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {bookingState.vehicle.regNumber !== 'NA' ? bookingState.vehicle.regNumber : 'No registration'}
+                </p>
               </div>
             </div>
             
@@ -146,12 +157,32 @@ const CheckoutPage = () => {
           <h3 className="font-medium mb-3">Services</h3>
           
           <div className="space-y-2">
-            {bookingState.services.map(serviceId => (
-              <div key={serviceId} className="flex justify-between text-sm">
-                <span>{mockServicesData[serviceId as keyof typeof mockServicesData]?.name}</span>
-                <span>₹{mockServicesData[serviceId as keyof typeof mockServicesData]?.price.toLocaleString()}</span>
-              </div>
-            ))}
+            {bookingState.services.map(serviceId => {
+              const serviceData = mockServicesData[serviceId as keyof typeof mockServicesData];
+              
+              // Apply price multipliers based on vehicle type
+              const priceMultipliers: Record<VehicleType, number> = {
+                'car': 1,
+                'bike': 0.6,
+                'truck': 2.5,
+                'bus': 3,
+                'auto-rickshaw': 0.8,
+                'bicycle': 0.3
+              };
+              
+              const multiplier = bookingState.vehicle?.type ? 
+                priceMultipliers[bookingState.vehicle.type] : 1;
+              
+              const adjustedPrice = serviceData?.price ? 
+                Math.round(serviceData.price * multiplier) : 0;
+              
+              return (
+                <div key={serviceId} className="flex justify-between text-sm">
+                  <span>{serviceData?.name}</span>
+                  <span>₹{adjustedPrice.toLocaleString()}</span>
+                </div>
+              );
+            })}
             
             <div className="border-t pt-2 mt-2 flex justify-between font-medium">
               <span>Total</span>

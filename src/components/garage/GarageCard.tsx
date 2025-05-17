@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { Star, MapPin, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { VehicleType } from '@/types/vehicles';
+import VehicleIcon from '@/components/vehicles/VehicleIcon';
 
 export interface Garage {
   id: string;
@@ -18,16 +20,22 @@ export interface Garage {
   openTime?: string;
   closeTime?: string;
   services?: string[];
+  supportedVehicles?: VehicleType[];
 }
 
 interface GarageCardProps {
   garage: Garage;
   isSaved?: boolean;
   className?: string;
+  selectedVehicleType?: VehicleType;
 }
 
-const GarageCard = ({ garage, isSaved = false, className }: GarageCardProps) => {
+const GarageCard = ({ garage, isSaved = false, className, selectedVehicleType }: GarageCardProps) => {
   const [saved, setSaved] = useState(isSaved);
+
+  // If supportedVehicles is not defined, assume garage supports all vehicle types
+  const isCompatible = !garage.supportedVehicles || !selectedVehicleType || 
+    garage.supportedVehicles.includes(selectedVehicleType);
 
   const toggleSave = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -36,7 +44,7 @@ const GarageCard = ({ garage, isSaved = false, className }: GarageCardProps) => 
   };
 
   return (
-    <div className={cn("garage-card", className)}>
+    <div className={cn("garage-card", className, !isCompatible && "opacity-70")}>
       <div className="relative">
         <img 
           src={garage.imageUrl} 
@@ -65,6 +73,20 @@ const GarageCard = ({ garage, isSaved = false, className }: GarageCardProps) => 
             {garage.isOpen ? "Open Now" : "Closed"}
           </span>
         </div>
+
+        {garage.supportedVehicles && (
+          <div className="absolute top-2 left-2 bg-white/80 px-2 py-1 rounded-md">
+            <div className="flex space-x-1">
+              {garage.supportedVehicles.map(type => (
+                <VehicleIcon 
+                  key={type} 
+                  type={type} 
+                  className={`h-4 w-4 ${selectedVehicleType === type ? 'text-garage-purple' : 'text-gray-700'}`} 
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
       
       <div className="p-4">
@@ -109,7 +131,12 @@ const GarageCard = ({ garage, isSaved = false, className }: GarageCardProps) => 
             <Button variant="outline" className="w-full">View Details</Button>
           </Link>
           <Link to={`/book-service/${garage.id}`} className="flex-1">
-            <Button className="w-full bg-garage-purple hover:bg-garage-purple/90">Book Now</Button>
+            <Button 
+              className="w-full bg-garage-purple hover:bg-garage-purple/90" 
+              disabled={!isCompatible}
+            >
+              Book Now
+            </Button>
           </Link>
         </div>
       </div>

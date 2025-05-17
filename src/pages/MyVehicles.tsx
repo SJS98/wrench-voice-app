@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Car, Plus, Edit, Trash } from "lucide-react";
+import { Edit, Plus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   Dialog, 
@@ -13,19 +13,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AppLayout from "@/components/layout/AppLayout";
+import { Vehicle, VehicleType, vehicleTypeNames } from "@/types/vehicles";
+import VehicleIcon from "@/components/vehicles/VehicleIcon";
 
-interface Vehicle {
-  id: string;
-  name: string;
-  brand: string;
-  model: string;
-  year: number;
-  registrationNumber: string;
-  type: "sedan" | "suv" | "hatchback" | "bike";
-  image?: string;
-}
-
-// Mock vehicle data
+// Mock vehicle data with updated types
 const mockVehicles: Vehicle[] = [
   {
     id: "1",
@@ -34,7 +25,7 @@ const mockVehicles: Vehicle[] = [
     model: "City",
     year: 2019,
     registrationNumber: "KA05AB1234",
-    type: "sedan",
+    type: "car",
     image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=500&auto=format&fit=crop"
   },
   {
@@ -44,18 +35,63 @@ const mockVehicles: Vehicle[] = [
     model: "Swift",
     year: 2021,
     registrationNumber: "MH01CD5678",
-    type: "hatchback",
+    type: "car",
     image: "https://images.unsplash.com/photo-1630475313173-97a671c40a3b?q=80&w=500&auto=format&fit=crop"
+  },
+  {
+    id: "3",
+    name: "My Splendor",
+    brand: "Hero",
+    model: "Splendor Plus",
+    year: 2022,
+    registrationNumber: "DL05XY9876",
+    type: "bike",
+    image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=500&auto=format&fit=crop"
+  },
+  {
+    id: "4",
+    name: "Delivery Truck",
+    brand: "Tata",
+    model: "Ace",
+    year: 2020,
+    registrationNumber: "TN01ZZ1122",
+    type: "truck",
+    image: "https://images.unsplash.com/photo-1519003722824-194d4c582e5c?q=80&w=500&auto=format&fit=crop"
   }
 ];
 
 const MyVehiclesPage = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>(mockVehicles);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [newVehicle, setNewVehicle] = useState<Partial<Vehicle>>({
+    type: "car"
+  });
   
-  const getVehicleIcon = (type: string) => {
-    // This would ideally use different icons for different vehicle types
-    return <Car className="h-6 w-6" />;
+  const handleInputChange = (field: keyof Vehicle, value: string | number) => {
+    setNewVehicle({
+      ...newVehicle,
+      [field]: value
+    });
+  };
+
+  const handleAddVehicle = () => {
+    if (!newVehicle.name || !newVehicle.brand || !newVehicle.model || !newVehicle.year || !newVehicle.registrationNumber) {
+      return;
+    }
+    
+    const vehicle: Vehicle = {
+      id: `${vehicles.length + 1}`,
+      name: newVehicle.name,
+      brand: newVehicle.brand,
+      model: newVehicle.model,
+      year: Number(newVehicle.year),
+      registrationNumber: newVehicle.registrationNumber,
+      type: newVehicle.type as VehicleType || "car",
+    };
+    
+    setVehicles([...vehicles, vehicle]);
+    setNewVehicle({ type: "car" });
+    setIsAddDialogOpen(false);
   };
 
   return (
@@ -76,42 +112,75 @@ const MyVehiclesPage = () => {
               <div className="space-y-4 pt-3">
                 <div className="space-y-2">
                   <Label htmlFor="vehicle-name">Vehicle Nickname</Label>
-                  <Input id="vehicle-name" placeholder="e.g., My Honda City" />
+                  <Input 
+                    id="vehicle-name" 
+                    placeholder="e.g., My Honda City" 
+                    value={newVehicle.name || ''}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="vehicle-type">Vehicle Type</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(Object.keys(vehicleTypeNames) as VehicleType[]).map((type) => (
+                      <Button
+                        key={type}
+                        type="button"
+                        variant={newVehicle.type === type ? "default" : "outline"}
+                        className={`flex flex-col items-center justify-center h-20 ${
+                          newVehicle.type === type ? "bg-garage-purple" : ""
+                        }`}
+                        onClick={() => handleInputChange('type', type)}
+                      >
+                        <VehicleIcon type={type} className="h-6 w-6 mb-1" />
+                        <span className="text-xs">{vehicleTypeNames[type]}</span>
+                      </Button>
+                    ))}
+                  </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
                     <Label htmlFor="brand">Brand</Label>
-                    <Input id="brand" placeholder="e.g., Honda" />
+                    <Input 
+                      id="brand" 
+                      placeholder="e.g., Honda" 
+                      value={newVehicle.brand || ''}
+                      onChange={(e) => handleInputChange('brand', e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="model">Model</Label>
-                    <Input id="model" placeholder="e.g., City" />
+                    <Input 
+                      id="model" 
+                      placeholder="e.g., City" 
+                      value={newVehicle.model || ''}
+                      onChange={(e) => handleInputChange('model', e.target.value)}
+                    />
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
                     <Label htmlFor="year">Year</Label>
-                    <Input id="year" placeholder="e.g., 2020" type="number" />
+                    <Input 
+                      id="year" 
+                      placeholder="e.g., 2020" 
+                      type="number" 
+                      value={newVehicle.year || ''}
+                      onChange={(e) => handleInputChange('year', parseInt(e.target.value) || '')}
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="type">Type</Label>
-                    <select 
-                      id="type" 
-                      className="w-full py-2 pl-3 pr-10 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-garage-purple focus:border-garage-purple"
-                    >
-                      <option value="sedan">Sedan</option>
-                      <option value="suv">SUV</option>
-                      <option value="hatchback">Hatchback</option>
-                      <option value="bike">Bike</option>
-                    </select>
+                    <Label htmlFor="registration">Registration Number</Label>
+                    <Input 
+                      id="registration" 
+                      placeholder="e.g., KA01AB1234" 
+                      value={newVehicle.registrationNumber || ''}
+                      onChange={(e) => handleInputChange('registrationNumber', e.target.value)}
+                    />
                   </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="registration">Registration Number</Label>
-                  <Input id="registration" placeholder="e.g., KA01AB1234" />
                 </div>
                 
                 <div className="space-y-2">
@@ -121,7 +190,7 @@ const MyVehiclesPage = () => {
                 
                 <Button 
                   className="w-full bg-garage-purple hover:bg-garage-purple/90"
-                  onClick={() => setIsAddDialogOpen(false)}
+                  onClick={handleAddVehicle}
                 >
                   Add Vehicle
                 </Button>
@@ -146,7 +215,7 @@ const MyVehiclesPage = () => {
                     />
                   ) : (
                     <div className="w-full h-40 bg-gray-100 flex items-center justify-center">
-                      <Car className="h-20 w-20 text-gray-300" />
+                      <VehicleIcon type={vehicle.type} className="h-20 w-20 text-gray-300" />
                     </div>
                   )}
                   
@@ -163,8 +232,9 @@ const MyVehiclesPage = () => {
                 <div className="p-4">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="font-semibold">{vehicle.name}</h3>
-                    <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
-                      {vehicle.type.toUpperCase()}
+                    <span className="text-xs bg-gray-100 px-2 py-1 rounded-full flex items-center">
+                      <VehicleIcon type={vehicle.type} className="h-3 w-3 mr-1" />
+                      {vehicleTypeNames[vehicle.type]}
                     </span>
                   </div>
                   
@@ -198,7 +268,7 @@ const MyVehiclesPage = () => {
         ) : (
           <div className="text-center py-16">
             <div className="mx-auto bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mb-4">
-              <Car className="h-8 w-8 text-gray-400" />
+              <VehicleIcon type="car" className="h-8 w-8 text-gray-400" />
             </div>
             <h3 className="text-lg font-medium mb-1">No vehicles added</h3>
             <p className="text-sm text-muted-foreground mb-4">

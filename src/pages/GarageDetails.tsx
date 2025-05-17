@@ -15,6 +15,8 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/components/layout/AppLayout';
 import ServiceCard, { Service } from '@/components/service/ServiceCard';
+import { VehicleType } from '@/types/vehicles';
+import VehicleIcon from '@/components/vehicles/VehicleIcon';
 
 // Mock garage data
 const mockGarageDetails = {
@@ -24,11 +26,12 @@ const mockGarageDetails = {
   address: 'MG Road, Bangalore',
   distance: '1.2 km',
   rating: 4.7,
-  reviews: 124,
+  reviewCount: 124, // Changed from 'reviews' to 'reviewCount' to avoid duplication
   phone: '+91 98765 43210',
   openTime: '8:00 AM',
   closeTime: '8:00 PM',
   isOpen: true,
+  supportedVehicles: ['car', 'bike', 'auto-rickshaw'] as VehicleType[],
   images: [
     'https://images.unsplash.com/photo-1617886903355-df116483a857?q=80&w=600&auto=format&fit=crop',
     'https://images.unsplash.com/photo-1613214177885-74ca3500b8a3?q=80&w=600&auto=format&fit=crop',
@@ -53,7 +56,7 @@ const mockGarageDetails = {
   ]
 };
 
-// Mock services
+// Mock services with vehicle compatibility
 const mockServices: Service[] = [
   {
     id: '1',
@@ -61,7 +64,8 @@ const mockServices: Service[] = [
     description: 'Oil change, filter replacement, and basic inspection',
     price: 2499,
     duration: '2 hours',
-    iconUrl: '/placeholder.svg'
+    iconUrl: '/placeholder.svg',
+    compatibleVehicles: ['car', 'bike', 'auto-rickshaw']
   },
   {
     id: '2',
@@ -69,7 +73,8 @@ const mockServices: Service[] = [
     description: 'Interior & exterior cleaning with polish',
     price: 999,
     duration: '1 hour',
-    iconUrl: '/placeholder.svg'
+    iconUrl: '/placeholder.svg',
+    compatibleVehicles: ['car', 'bike', 'auto-rickshaw', 'truck', 'bus']
   },
   {
     id: '3',
@@ -77,7 +82,8 @@ const mockServices: Service[] = [
     description: 'Rotate tires for even wear and alignment check',
     price: 799,
     duration: '45 min',
-    iconUrl: '/placeholder.svg'
+    iconUrl: '/placeholder.svg',
+    compatibleVehicles: ['car', 'truck', 'bus']
   },
   {
     id: '4',
@@ -85,7 +91,8 @@ const mockServices: Service[] = [
     description: 'Complete AC system service and gas refill',
     price: 3999,
     duration: '3 hours',
-    iconUrl: '/placeholder.svg'
+    iconUrl: '/placeholder.svg',
+    compatibleVehicles: ['car', 'bus', 'truck']
   }
 ];
 
@@ -147,6 +154,16 @@ const GarageDetailsPage = () => {
                 <span>{garage.phone}</span>
               </div>
             </div>
+            
+            {/* Supported vehicles */}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {garage.supportedVehicles?.map((type) => (
+                <div key={type} className="flex items-center gap-1 text-sm bg-garage-purple/10 px-2 py-1 rounded-md">
+                  <VehicleIcon type={type} className="h-4 w-4 text-garage-purple" />
+                  <span className="text-garage-purple text-xs">{type.charAt(0).toUpperCase() + type.slice(1).replace('-', ' ')}</span>
+                </div>
+              ))}
+            </div>
           </div>
           
           <div className="flex gap-2 mb-6">
@@ -194,7 +211,7 @@ const GarageDetailsPage = () => {
                     <span className="text-2xl font-bold">{garage.rating}</span>
                     <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                   </div>
-                  <p className="text-sm text-muted-foreground">Based on {garage.reviews.length} reviews</p>
+                  <p className="text-sm text-muted-foreground">Based on {garage.reviewCount} reviews</p>
                 </div>
                 
                 <Button variant="outline" size="sm">
