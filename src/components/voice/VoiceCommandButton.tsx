@@ -24,6 +24,14 @@ interface SpeechRecognitionInterface {
   lang?: string;
 }
 
+// Add TypeScript declarations for the Web Speech API
+declare global {
+  interface Window {
+    SpeechRecognition?: new () => SpeechRecognitionInterface;
+    webkitSpeechRecognition?: new () => SpeechRecognitionInterface;
+  }
+}
+
 // Mock function for speech recognition
 const createMockSpeechRecognition = (): SpeechRecognitionInterface => {
   let isListening = false;
@@ -96,8 +104,8 @@ const VoiceCommandButton = () => {
 
     // Use browser's SpeechRecognition if available, otherwise use our mock
     const SpeechRecognition = window.SpeechRecognition || 
-                           (window as any).webkitSpeechRecognition ||
-                           createMockSpeechRecognition;
+                             window.webkitSpeechRecognition ||
+                             createMockSpeechRecognition;
     
     const recognition = new SpeechRecognition();
     if ('lang' in recognition) {
