@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { 
   User, 
@@ -12,8 +13,12 @@ import {
   Settings
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import AppLayout from "@/components/layout/AppLayout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 // Mock user data
 const user = {
@@ -24,6 +29,15 @@ const user = {
 };
 
 const ProfilePage = () => {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    avatar: user.avatar
+  });
+  const { toast } = useToast();
+
   const menuItems = [
     {
       title: "My Vehicles",
@@ -69,6 +83,40 @@ const ProfilePage = () => {
     }
   ];
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // In a real app, you would call an API to update the profile
+    // For now, we'll simulate success with a toast
+    toast({
+      title: "Profile updated",
+      description: "Your profile has been successfully updated.",
+    });
+    
+    setIsEditDialogOpen(false);
+    
+    // In a real app, you would update the Redux store here
+    // For now, let's just simulate that by updating our local user object
+    Object.assign(user, formData);
+  };
+
+  const handleLogout = () => {
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+    });
+    // In a real app, you would clear auth state from Redux
+    // and redirect to the login page
+  };
+
   return (
     <AppLayout title="Profile" showSettings={true}>
       <div className="page-container">
@@ -87,6 +135,7 @@ const ProfilePage = () => {
         <Button 
           variant="outline" 
           className="w-full mb-6 border-garage-purple text-garage-purple"
+          onClick={() => setIsEditDialogOpen(true)}
         >
           <User className="mr-2 h-4 w-4" /> Edit Profile
         </Button>
@@ -111,6 +160,7 @@ const ProfilePage = () => {
           <Button 
             variant="ghost" 
             className="w-full text-red-500 hover:text-red-600 hover:bg-red-50"
+            onClick={handleLogout}
           >
             <LogOut className="mr-2 h-4 w-4" /> Log Out
           </Button>
@@ -121,6 +171,70 @@ const ProfilePage = () => {
             App Version 1.0.0
           </p>
         </div>
+
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit Profile</DialogTitle>
+              <DialogDescription>
+                Make changes to your profile information here. Click save when you're done.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+              <div className="grid w-full items-center gap-1.5">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="grid w-full items-center gap-1.5">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="grid w-full items-center gap-1.5">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="grid w-full items-center gap-1.5">
+                <Label htmlFor="avatar">Profile Picture URL</Label>
+                <Input
+                  type="text"
+                  id="avatar"
+                  name="avatar"
+                  value={formData.avatar}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  Save Changes
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </AppLayout>
   );
