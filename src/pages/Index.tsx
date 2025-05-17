@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/components/layout/AppLayout';
 import GarageCard, { Garage } from '@/components/garage/GarageCard';
 import VoiceCommandButton from '@/components/voice/VoiceCommandButton';
-import { Car, Package, SOS, Bell, Star } from 'lucide-react';
+import { Car, Package, Bell, Star, Ambulance } from 'lucide-react';
 
 // Mock data for nearby garages
 const mockGarages: Garage[] = [
@@ -115,7 +114,7 @@ const Home = () => {
           <Link to="/sos">
             <div className="flex flex-col items-center">
               <div className="bg-red-100 p-3 rounded-full mb-2">
-                <SOS className="h-5 w-5 text-red-500" />
+                <Ambulance className="h-5 w-5 text-red-500" />
               </div>
               <span className="text-xs">SOS</span>
             </div>

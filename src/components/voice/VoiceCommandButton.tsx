@@ -5,8 +5,27 @@ import { Mic } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
+// Define types for the SpeechRecognition API
+interface SpeechRecognitionEvent {
+  results: {
+    [index: number]: {
+      [index: number]: {
+        transcript: string;
+        confidence: number;
+      }
+    }
+  }
+}
+
+interface SpeechRecognitionInterface {
+  start: () => void;
+  stop: () => void;
+  addEventListener: (event: string, callback: any) => void;
+  lang?: string;
+}
+
 // Mock function for speech recognition
-const createMockSpeechRecognition = () => {
+const createMockSpeechRecognition = (): SpeechRecognitionInterface => {
   let isListening = false;
   let onresult: ((event: any) => void) | null = null;
   let onend: (() => void) | null = null;
@@ -77,11 +96,13 @@ const VoiceCommandButton = () => {
 
     // Use browser's SpeechRecognition if available, otherwise use our mock
     const SpeechRecognition = window.SpeechRecognition || 
-                            window.webkitSpeechRecognition ||
-                            createMockSpeechRecognition;
+                           (window as any).webkitSpeechRecognition ||
+                           createMockSpeechRecognition;
     
     const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
+    if ('lang' in recognition) {
+      recognition.lang = 'en-US';
+    }
     
     recognition.addEventListener('result', (event: any) => {
       const transcript = event.results[0][0].transcript;
