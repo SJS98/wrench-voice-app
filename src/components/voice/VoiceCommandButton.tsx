@@ -102,12 +102,17 @@ const VoiceCommandButton = () => {
     setIsListening(true);
     setResult('');
 
-    // Use browser's SpeechRecognition if available, otherwise use our mock
-    const SpeechRecognition = window.SpeechRecognition || 
-                             window.webkitSpeechRecognition ||
-                             createMockSpeechRecognition;
+    // Fix: Create proper instance of SpeechRecognition based on availability
+    let recognition: SpeechRecognitionInterface;
     
-    const recognition = new SpeechRecognition();
+    if (window.SpeechRecognition) {
+      recognition = new window.SpeechRecognition();
+    } else if (window.webkitSpeechRecognition) {
+      recognition = new window.webkitSpeechRecognition();
+    } else {
+      recognition = createMockSpeechRecognition();
+    }
+    
     if ('lang' in recognition) {
       recognition.lang = 'en-US';
     }

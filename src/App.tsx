@@ -10,7 +10,7 @@ import Index from "./pages/Index";
 import Search from "./pages/Search";
 import Services from "./pages/Services";
 import SOS from "./pages/SOS";
-import GarageDetails from "./pages/GarageDetails";
+import GarageDetails from "./pages/GarageDetailsFixed"; // Use the fixed version
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
 import MyVehicles from "./pages/MyVehicles";
