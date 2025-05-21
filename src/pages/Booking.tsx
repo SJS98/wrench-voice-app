@@ -8,6 +8,8 @@ import VehicleSelection from '@/components/booking/VehicleSelection';
 import ServiceTypeSelection from '@/components/booking/ServiceTypeSelection';
 import BookingForm from '@/components/booking/BookingForm';
 import BookingStepper from '@/components/booking/BookingStepper';
+import GarageSearch from '@/components/booking/GarageSearch';
+import { Garage } from '@/components/garage/GarageCard';
 
 export type ServiceType = 'repair_at_home' | 'repair_at_location' | 'repair_pickup_delivery';
 
@@ -17,6 +19,7 @@ export interface BookingData {
   address: string;
   date: string;
   time: string;
+  garage?: Garage;
 }
 
 const Booking = () => {
@@ -40,12 +43,23 @@ const Booking = () => {
     setCurrentStep(3);
   };
 
+  const handleGarageSelect = (garage: Garage) => {
+    setBookingData(prev => ({ ...prev, garage }));
+    setCurrentStep(4);
+  };
+
   const handleFormSubmit = (formData: Pick<BookingData, 'address' | 'date' | 'time'>) => {
     setBookingData(prev => ({ ...prev, ...formData }));
     
-    // Here we would typically save the booking data to a backend
-    // For now, we'll navigate to a confirmation page
-    navigate('/booking/payment', { state: { bookingData: { ...bookingData, ...formData } } });
+    // Navigate to payment page with updated booking data
+    navigate('/booking/payment', { 
+      state: { 
+        bookingData: { 
+          ...bookingData, 
+          ...formData
+        } 
+      } 
+    });
   };
 
   const handleBack = () => {
@@ -63,7 +77,7 @@ const Booking = () => {
   return (
     <AppLayout title="Book Service" showBackButton>
       <div className="page-container">
-        <BookingStepper currentStep={currentStep} totalSteps={4} />
+        <BookingStepper currentStep={currentStep} totalSteps={5} />
 
         {currentStep === 1 && (
           <div className="mt-4">
@@ -81,7 +95,26 @@ const Booking = () => {
 
         {currentStep === 3 && (
           <div className="mt-4">
+            <h2 className="text-xl font-semibold mb-6">Find Nearby Garage</h2>
+            <GarageSearch 
+              vehicleType={bookingData.vehicleType}
+              onGarageSelect={handleGarageSelect}
+            />
+          </div>
+        )}
+
+        {currentStep === 4 && (
+          <div className="mt-4">
             <h2 className="text-xl font-semibold mb-6">Booking Details</h2>
+            
+            {bookingData.garage && (
+              <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+                <h3 className="font-medium">Selected Garage</h3>
+                <p>{bookingData.garage.name}</p>
+                <p className="text-sm text-gray-500">{bookingData.garage.address}</p>
+              </div>
+            )}
+            
             <BookingForm onSubmit={handleFormSubmit} />
           </div>
         )}

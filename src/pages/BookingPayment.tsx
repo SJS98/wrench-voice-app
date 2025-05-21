@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import BookingStepper from '@/components/booking/BookingStepper';
 import { BookingData } from './Booking';
+import { useToast } from '@/hooks/use-toast';
 
 type PaymentMethod = 'upi' | 'google_pay' | 'net_banking' | 'card';
 
 const BookingPayment = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { bookingData } = location.state as { bookingData: BookingData } || { bookingData: null };
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
   
@@ -21,10 +23,49 @@ const BookingPayment = () => {
     return null;
   }
 
+  // Check if it's a remote service that requires advance payment
+  const isRemoteService = bookingData.serviceType === 'repair_at_home';
+  const transportFee = isRemoteService ? 149 : 0;
+  const basePrice = 499;
+  const taxAmount = Math.round((basePrice + transportFee) * 0.18);
+  const totalAmount = basePrice + transportFee + taxAmount;
+
   const handlePayment = () => {
     // Here you would integrate with a payment gateway
     // For now, we'll just simulate a successful payment
-    navigate('/booking/confirmation', { state: { bookingData, paymentMethod } });
+    navigate('/booking/confirmation', { 
+      state: { 
+        bookingData, 
+        paymentMethod,
+        paymentDetails: {
+          amount: totalAmount,
+          isPaid: true
+        }
+      } 
+    });
+  };
+  
+  const handlePayLater = () => {
+    // Don't allow pay later for remote services
+    if (isRemoteService) {
+      toast({
+        title: "Advance payment required",
+        description: "Remote services require advance payment for transport charges.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    navigate('/booking/confirmation', { 
+      state: { 
+        bookingData, 
+        paymentMethod: 'pay_later',
+        paymentDetails: {
+          amount: totalAmount,
+          isPaid: false
+        }
+      } 
+    });
   };
 
   const paymentOptions = [
@@ -37,7 +78,7 @@ const BookingPayment = () => {
   return (
     <AppLayout title="Payment" showBackButton>
       <div className="page-container">
-        <BookingStepper currentStep={4} totalSteps={4} />
+        <BookingStepper currentStep={4} totalSteps={5} />
 
         <div className="mt-4 mb-6">
           <h2 className="text-xl font-semibold mb-2">Booking Detail</h2>
@@ -94,20 +135,22 @@ const BookingPayment = () => {
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex justify-between mb-2">
               <span>Base Service Charge</span>
-              <span>₹499</span>
+              <span>₹{basePrice}</span>
             </div>
-            <div className="flex justify-between mb-2">
-              <span>Travel Charge</span>
-              <span>₹99</span>
-            </div>
+            {isRemoteService && (
+              <div className="flex justify-between mb-2">
+                <span>Transport Charge</span>
+                <span>₹{transportFee}</span>
+              </div>
+            )}
             <div className="flex justify-between mb-2">
               <span>Tax</span>
-              <span>₹108</span>
+              <span>₹{taxAmount}</span>
             </div>
             <div className="border-t border-dashed my-2"></div>
             <div className="flex justify-between font-bold">
               <span>Total</span>
-              <span>₹706</span>
+              <span>₹{totalAmount}</span>
             </div>
           </div>
         </div>
@@ -118,14 +161,15 @@ const BookingPayment = () => {
             disabled={!paymentMethod}
             className="w-full bg-garage-purple hover:bg-garage-purple/90 text-white"
           >
-            Pay Now ₹706
+            Pay Now ₹{totalAmount}
           </Button>
           <Button
-            onClick={() => navigate('/booking')}
+            onClick={handlePayLater}
             variant="outline"
-            className="w-full mt-2"
+            className={`w-full mt-2 ${isRemoteService ? 'opacity-50' : ''}`}
+            disabled={isRemoteService}
           >
-            Pay after service
+            {isRemoteService ? 'Advance Payment Required' : 'Pay after service'}
           </Button>
         </div>
       </div>

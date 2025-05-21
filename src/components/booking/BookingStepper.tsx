@@ -29,6 +29,7 @@ const getStepLabel = (step: number): string => {
     case 2: return 'Select Service';
     case 3: return 'Booking Details';
     case 4: return 'Payment';
+    case 5: return 'Confirmation';
     default: return '';
   }
 };
