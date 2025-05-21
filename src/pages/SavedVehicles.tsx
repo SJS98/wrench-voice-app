@@ -8,16 +8,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Heart, MapPin, Search } from 'lucide-react';
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { useToast } from '@/hooks/use-toast';
 import VehicleIcon from '@/components/vehicles/VehicleIcon';
+import { VehicleType } from '@/types/vehicles';
 
 // Mock data for saved/purchased vehicles
 const mockSavedVehicles = [
   {
     id: '1',
     title: '2019 Hyundai i20 - Low Mileage, Single Owner',
-    type: 'car',
+    type: 'car' as VehicleType,
     make: 'Hyundai',
     model: 'i20',
     year: 2019,
@@ -30,7 +31,7 @@ const mockSavedVehicles = [
   {
     id: '2',
     title: '2020 Royal Enfield Classic 350 - BS6 Model',
-    type: 'bike',
+    type: 'bike' as VehicleType,
     make: 'Royal Enfield',
     model: 'Classic 350',
     year: 2020,

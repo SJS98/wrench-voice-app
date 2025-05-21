@@ -51,7 +51,7 @@ const RegisterPage = () => {
   const onSubmit = async (values: RegisterFormValues) => {
     setLoading(true);
     try {
-      await register(values.name, values.email, values.password);
+      await register(values.name, values.email, values.password, 'customer');
       toast({
         title: 'Success',
         description: 'Your account has been created',
