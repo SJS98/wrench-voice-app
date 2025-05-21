@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/components/layout/AppLayout';
 import GarageCard, { Garage } from '@/components/garage/GarageCard';
 import VoiceCommandButton from '@/components/voice/VoiceCommandButton';
-import { Car, Package, Bell, Star, Ambulance } from 'lucide-react';
+import { Car, Package, Bell, Star, Ambulance, ShoppingCart } from 'lucide-react';
 
 // Mock data for nearby garages
 const mockGarages: Garage[] = [
@@ -99,7 +99,7 @@ const Home = () => {
         </div>
 
         {/* Quick Access Actions */}
-        <div className="grid grid-cols-4 gap-2 mb-8">
+        <div className="grid grid-cols-5 gap-2 mb-8">
           <Link to="/services">
             <div className="flex flex-col items-center">
               <div className="bg-garage-purple/10 p-3 rounded-full mb-2">
@@ -118,7 +118,16 @@ const Home = () => {
             </div>
           </Link>
           
-          <Link to="/garage-bag">
+          <Link to="/used-vehicles">
+            <div className="flex flex-col items-center">
+              <div className="bg-garage-purple/10 p-3 rounded-full mb-2">
+                <ShoppingCart className="h-5 w-5 text-garage-purple" />
+              </div>
+              <span className="text-xs">Buy Used</span>
+            </div>
+          </Link>
+          
+          <Link to="/saved-vehicles">
             <div className="flex flex-col items-center">
               <div className="bg-garage-orange/10 p-3 rounded-full mb-2">
                 <Star className="h-5 w-5 text-garage-orange" />
@@ -152,6 +161,33 @@ const Home = () => {
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+
+        {/* Used Vehicles Section */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="section-title">Used Vehicles</h2>
+            <Link to="/used-vehicles" className="text-sm text-garage-purple">View All</Link>
+          </div>
+          <div className="bg-gradient-to-r from-garage-purple/10 to-garage-blue/10 rounded-lg p-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h3 className="font-semibold text-lg mb-1">Find Your Next Vehicle</h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Browse verified used vehicles from trusted sellers
+                </p>
+                <Link to="/used-vehicles">
+                  <Button size="sm">Explore Vehicles</Button>
+                </Link>
+              </div>
+              <div className="relative w-24 h-24 sm:w-32 sm:h-32">
+                <div className="absolute w-full h-full rounded-full bg-garage-purple/20 animate-ping"></div>
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <Car className="w-16 h-16 text-garage-purple" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

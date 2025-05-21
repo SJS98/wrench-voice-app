@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,6 +35,13 @@ import EditGarageProfile from "./pages/EditGarageProfile";
 import ManageBookings from "./pages/ManageBookings";
 import ManageServices from "./pages/ManageServices";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+
+// Used Vehicles Pages
+import UsedVehicles from "./pages/UsedVehicles";
+import VehicleDetails from "./pages/VehicleDetails";
+import SellVehicle from "./pages/SellVehicle";
+import MyListings from "./pages/MyListings";
+import SavedVehicles from "./pages/SavedVehicles";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +86,14 @@ const App = () => (
             <Route path="/edit-garage" element={<EditGarageProfile />} />
             <Route path="/manage-bookings" element={<ManageBookings />} />
             <Route path="/manage-services" element={<ManageServices />} />
+
+            {/* Used Vehicles Routes */}
+            <Route path="/used-vehicles" element={<UsedVehicles />} />
+            <Route path="/used-vehicles/:id" element={<VehicleDetails />} />
+            <Route path="/used-vehicles/sell" element={<SellVehicle />} />
+            <Route path="/my-listings" element={<MyListings />} />
+            <Route path="/saved-vehicles" element={<SavedVehicles />} />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
