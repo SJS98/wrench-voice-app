@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/components/layout/AppLayout';
 import GarageCard, { Garage } from '@/components/garage/GarageCard';
@@ -63,6 +64,7 @@ const quickServices = [
 const Home = () => {
   const [userName, setUserName] = useState('User');
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Simulate data loading
@@ -74,12 +76,26 @@ const Home = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleBookNow = () => {
+    navigate('/booking');
+  };
+
   return (
     <AppLayout title="Mr.GarageWala">
       <div className="page-container">
         <div className="mt-2 mb-6">
           <p className="text-muted-foreground">Welcome back,</p>
           <h1 className="text-2xl font-bold">{loading ? 'Loading...' : userName}</h1>
+        </div>
+
+        {/* Main Book Now Button */}
+        <div className="mb-8">
+          <Button 
+            onClick={handleBookNow} 
+            className="w-full bg-garage-purple hover:bg-garage-purple/90 text-white py-3 text-lg font-medium"
+          >
+            Book Service Now
+          </Button>
         </div>
 
         {/* Quick Access Actions */}

@@ -24,6 +24,11 @@ import BookingDetails from "./pages/BookingDetails";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
+// New booking flow pages
+import Booking from "./pages/Booking";
+import BookingPayment from "./pages/BookingPayment";
+import BookingConfirmationPage from "./pages/BookingConfirmationPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -49,6 +54,12 @@ const App = () => (
             <Route path="/booking-details/:id" element={<BookingDetails />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+
+            {/* New booking flow routes */}
+            <Route path="/booking" element={<Booking />} />
+            <Route path="/booking/payment" element={<BookingPayment />} />
+            <Route path="/booking/confirmation" element={<BookingConfirmationPage />} />
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
