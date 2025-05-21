@@ -28,10 +28,19 @@ interface GarageData {
   completedBookings: number;
 }
 
+interface CartItem {
+  partId: string;
+  quantity: number;
+  price: number;
+  title: string;
+  image: string;
+}
+
 interface UserAuthContextType {
   user: User | null;
   loading: boolean;
   garageData: GarageData | null;
+  cartItems: CartItem[];
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (name: string, email: string, password: string, role: 'owner' | 'customer') => Promise<void>;
@@ -42,6 +51,10 @@ interface UserAuthContextType {
   addService: (service: Omit<GarageService, 'id'>) => Promise<void>;
   updateService: (service: GarageService) => Promise<void>;
   deleteService: (serviceId: string) => Promise<void>;
+  addToCart: (partId: string, quantity: number) => Promise<void>;
+  removeFromCart: (partId: string) => Promise<void>;
+  updateCartItemQuantity: (partId: string, quantity: number) => Promise<void>;
+  clearCart: () => Promise<void>;
 }
 
 const UserAuthContext = createContext<UserAuthContextType | undefined>(undefined);
@@ -85,6 +98,7 @@ export const UserAuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [garageData, setGarageData] = useState<GarageData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const login = async (email: string, password: string) => {
     setLoading(true);
@@ -104,6 +118,7 @@ export const UserAuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setUser(null);
     setGarageData(null);
+    setCartItems([]);
   };
 
   const register = async (name: string, email: string, password: string, role: 'owner' | 'customer' = 'customer') => {
@@ -250,12 +265,99 @@ export const UserAuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Cart operations
+  const addToCart = async (partId: string, quantity: number) => {
+    setLoading(true);
+    try {
+      // Mock adding to cart - replace with actual implementation
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      const existingItemIndex = cartItems.findIndex(item => item.partId === partId);
+      
+      if (existingItemIndex !== -1) {
+        // Update existing item
+        const updatedCartItems = [...cartItems];
+        updatedCartItems[existingItemIndex] = {
+          ...updatedCartItems[existingItemIndex],
+          quantity: updatedCartItems[existingItemIndex].quantity + quantity
+        };
+        setCartItems(updatedCartItems);
+      } else {
+        // Add new item (in a real app, fetch part details first)
+        setCartItems([...cartItems, {
+          partId,
+          quantity,
+          price: 1500, // Mock price, in real app would get from API
+          title: "Mock Part Title", // Mock title, in real app would get from API
+          image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=150&auto=format&fit=crop"
+        }]);
+      }
+    } catch (error) {
+      console.error('Add to cart failed:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeFromCart = async (partId: string) => {
+    setLoading(true);
+    try {
+      // Mock removing from cart - replace with actual implementation
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setCartItems(cartItems.filter(item => item.partId !== partId));
+    } catch (error) {
+      console.error('Remove from cart failed:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateCartItemQuantity = async (partId: string, quantity: number) => {
+    setLoading(true);
+    try {
+      // Mock updating cart item quantity - replace with actual implementation
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      if (quantity <= 0) {
+        // Remove item if quantity is 0 or negative
+        setCartItems(cartItems.filter(item => item.partId !== partId));
+      } else {
+        // Update quantity
+        setCartItems(cartItems.map(item => 
+          item.partId === partId ? { ...item, quantity } : item
+        ));
+      }
+    } catch (error) {
+      console.error('Update cart item quantity failed:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearCart = async () => {
+    setLoading(true);
+    try {
+      // Mock clearing cart - replace with actual implementation
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setCartItems([]);
+    } catch (error) {
+      console.error('Clear cart failed:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <UserAuthContext.Provider 
       value={{
         user,
         loading,
         garageData,
+        cartItems,
         login,
         logout,
         register,
@@ -266,6 +368,10 @@ export const UserAuthProvider = ({ children }: { children: ReactNode }) => {
         addService,
         updateService,
         deleteService,
+        addToCart,
+        removeFromCart,
+        updateCartItemQuantity,
+        clearCart,
       }}
     >
       {children}

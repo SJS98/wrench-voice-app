@@ -43,6 +43,16 @@ import SellVehicle from "./pages/SellVehicle";
 import MyListings from "./pages/MyListings";
 import SavedVehicles from "./pages/SavedVehicles";
 
+// Spare Parts Pages
+import SpareParts from "./pages/SpareParts";
+import SparePartDetails from "./pages/SparePartDetails";
+import SellSparePart from "./pages/SellSparePart";
+import SparePartCart from "./pages/SparePartCart";
+import MySparePartOrders from "./pages/MySparePartOrders";
+
+// Service Media Pages
+import ServiceBookMedia from "./pages/ServiceBookMedia";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -93,6 +103,16 @@ const App = () => (
             <Route path="/used-vehicles/sell" element={<SellVehicle />} />
             <Route path="/my-listings" element={<MyListings />} />
             <Route path="/saved-vehicles" element={<SavedVehicles />} />
+            
+            {/* Spare Parts Routes */}
+            <Route path="/spare-parts" element={<SpareParts />} />
+            <Route path="/spare-parts/:id" element={<SparePartDetails />} />
+            <Route path="/sell-spare-part" element={<SellSparePart />} />
+            <Route path="/spare-parts/cart" element={<SparePartCart />} />
+            <Route path="/my-spare-part-orders" element={<MySparePartOrders />} />
+            
+            {/* Service Media Routes */}
+            <Route path="/service-book/:id/media" element={<ServiceBookMedia />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

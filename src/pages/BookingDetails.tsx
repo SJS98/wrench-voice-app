@@ -1,4 +1,3 @@
-
 import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
@@ -12,7 +11,8 @@ import {
   MessageSquare, 
   Phone, 
   Share,
-  Star
+  Star,
+  Camera
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -57,7 +57,8 @@ const mockBooking = {
       time: 'Will update on 25 May',
       description: 'Service has been completed and vehicle is ready for pickup.'
     }
-  ]
+  ],
+  hasMedia: true // Flag to indicate if this booking has media items
 };
 
 const BookingDetailsPage = () => {
@@ -151,6 +152,34 @@ const BookingDetailsPage = () => {
                 <span className="font-medium">₹{mockBooking.totalPrice.toLocaleString()}</span>
               </div>
             </div>
+
+            {/* Service Media Section - New */}
+            {mockBooking.hasMedia && (
+              <div className="bg-white rounded-lg border p-4">
+                <h3 className="font-medium mb-3">Service Media</h3>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-blue-100 p-2 rounded-full">
+                      <Camera className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Photos & Videos</p>
+                      <p className="text-xs text-muted-foreground">
+                        View media updates of your service
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <Link to={`/service-book/${mockBooking.id}/media`}>
+                    <Button variant="outline" size="sm">
+                      View Media
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            )}
 
             {/* Garage Details */}
             <div className="bg-white rounded-lg border p-4">

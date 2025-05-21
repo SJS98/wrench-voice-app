@@ -1,40 +1,78 @@
 
-import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, Bell, User, Car } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import {
+  Home,
+  Search,
+  Wrench,
+  SOS,
+  User,
+  Car,
+  ShoppingBag,
+  Clipboard
+} from 'lucide-react';
 
 const MobileNavigation = () => {
-  const location = useLocation();
-  const [activeTab, setActiveTab] = useState(location.pathname);
+  const { pathname } = useLocation();
 
-  const navItems = [
-    { name: 'Home', path: '/', icon: <Home className="h-5 w-5" /> },
-    { name: 'Search', path: '/search', icon: <Search className="h-5 w-5" /> },
-    { name: 'Services', path: '/services', icon: <Car className="h-5 w-5" /> },
-    { name: 'Notifications', path: '/notifications', icon: <Bell className="h-5 w-5" /> },
-    { name: 'Profile', path: '/profile', icon: <User className="h-5 w-5" /> },
-  ];
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return pathname === path;
+    }
+    return pathname.startsWith(path);
+  };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
-      <div className="flex justify-around items-center py-2 px-4">
-        {navItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={cn(
-              "flex flex-col items-center justify-center px-3 py-2 rounded-lg",
-              activeTab === item.path
-                ? "text-garage-purple"
-                : "text-gray-500 hover:text-garage-blue"
-            )}
-            onClick={() => setActiveTab(item.path)}
-          >
-            {item.icon}
-            <span className="text-xs mt-1">{item.name}</span>
-          </Link>
-        ))}
+    <div className="fixed bottom-0 left-0 right-0 border-t bg-white z-10">
+      <div className="grid grid-cols-5 gap-1">
+        <Link
+          to="/"
+          className={`flex flex-col items-center py-2 ${
+            isActive('/') ? 'text-garage-purple' : 'text-gray-500'
+          }`}
+        >
+          <Home className="h-5 w-5" />
+          <span className="text-xs mt-1">Home</span>
+        </Link>
+
+        <Link
+          to="/services"
+          className={`flex flex-col items-center py-2 ${
+            isActive('/services') ? 'text-garage-purple' : 'text-gray-500'
+          }`}
+        >
+          <Wrench className="h-5 w-5" />
+          <span className="text-xs mt-1">Services</span>
+        </Link>
+
+        <Link
+          to="/sos"
+          className={`flex flex-col items-center py-2 ${
+            isActive('/sos') ? 'text-garage-purple' : 'text-gray-500'
+          }`}
+        >
+          <SOS className="h-5 w-5" />
+          <span className="text-xs mt-1">SOS</span>
+        </Link>
+
+        <Link
+          to="/spare-parts"
+          className={`flex flex-col items-center py-2 ${
+            isActive('/spare-parts') ? 'text-garage-purple' : 'text-gray-500'
+          }`}
+        >
+          <ShoppingBag className="h-5 w-5" />
+          <span className="text-xs mt-1">Parts</span>
+        </Link>
+
+        <Link
+          to="/profile"
+          className={`flex flex-col items-center py-2 ${
+            isActive('/profile') ? 'text-garage-purple' : 'text-gray-500'
+          }`}
+        >
+          <User className="h-5 w-5" />
+          <span className="text-xs mt-1">Profile</span>
+        </Link>
       </div>
     </div>
   );
