@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Car, Bike, Truck, Bus, Bicycle } from 'lucide-react';
+import { Car, Bike, Truck, Bus } from 'lucide-react';
 import { VehicleType } from '@/types/vehicles';
 
 // Custom component for Auto Rickshaw as it's not in lucide-react
@@ -26,6 +26,27 @@ const AutoRickshaw = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+// Custom component for Bicycle as it's not accurately represented in lucide-react
+const Bicycle = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <circle cx="6" cy="15" r="4" />
+    <circle cx="18" cy="15" r="4" />
+    <path d="M6 15 8 7h8l-2 8" />
+    <path d="m14 15-4-7" />
+  </svg>
+);
+
 interface VehicleIconProps {
   type: VehicleType;
   className?: string;
@@ -45,7 +66,7 @@ const VehicleIcon: React.FC<VehicleIconProps> = ({ type, className, size = 24 })
     case 'auto-rickshaw':
       return <AutoRickshaw className={className} width={size} height={size} />;
     case 'bicycle':
-      return <Bicycle className={className} size={size} />;
+      return <Bicycle className={className} width={size} height={size} />;
     default:
       return <Car className={className} size={size} />;
   }
