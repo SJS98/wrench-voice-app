@@ -53,17 +53,21 @@ interface VehicleIconProps {
   size?: number;
 }
 
-const VehicleIcon: React.FC<VehicleIconProps> = ({ type, className, size = 24 }) => {
+const VehicleIcon: React.FC<VehicleIconProps> = ({
+  type,
+  className,
+  size = 24,
+}) => {
   switch (type) {
-    case 'car':
+    case "car":
       return <Car className={className} size={size} />;
-    case 'bike':
+    case "bike":
       return <Bike className={className} size={size} />;
-    case 'truck':
+    case "truck":
       return <Truck className={className} size={size} />;
-    case 'bus':
+    case "bus":
       return <Bus className={className} size={size} />;
-    case 'auto-rickshaw':
+    case "auto-rickshaw":
       return <AutoRickshaw className={className} width={size} height={size} />;
     case 'bicycle':
       return <Bicycle className={className} width={size} height={size} />;

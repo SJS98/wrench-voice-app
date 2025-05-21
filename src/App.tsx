@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,6 +27,13 @@ import Register from "./pages/Register";
 import Booking from "./pages/Booking";
 import BookingPayment from "./pages/BookingPayment";
 import BookingConfirmationPage from "./pages/BookingConfirmationPage";
+import Settings from "./pages/Settings";
+import RegisterOwner from "./pages/RegisterOwner";
+import OwnerDashboard from "./pages/OwnerDashboard";
+import EditGarageProfile from "./pages/EditGarageProfile";
+import ManageBookings from "./pages/ManageBookings";
+import ManageServices from "./pages/ManageServices";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -49,7 +55,10 @@ const App = () => (
             <Route path="/my-vehicles" element={<MyVehicles />} />
             <Route path="/book-service/:id" element={<BookService />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+            <Route
+              path="/booking-confirmation"
+              element={<BookingConfirmation />}
+            />
             <Route path="/my-bookings" element={<MyBookings />} />
             <Route path="/booking-details/:id" element={<BookingDetails />} />
             <Route path="/login" element={<Login />} />
@@ -58,8 +67,17 @@ const App = () => (
             {/* New booking flow routes */}
             <Route path="/booking" element={<Booking />} />
             <Route path="/booking/payment" element={<BookingPayment />} />
-            <Route path="/booking/confirmation" element={<BookingConfirmationPage />} />
+            <Route
+              path="/booking/confirmation"
+              element={<BookingConfirmationPage />}
+            />
 
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/register-owner" element={<RegisterOwner />} />
+            <Route path="/owner-dashboard" element={<OwnerDashboard />} />
+            <Route path="/edit-garage" element={<EditGarageProfile />} />
+            <Route path="/manage-bookings" element={<ManageBookings />} />
+            <Route path="/manage-services" element={<ManageServices />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
