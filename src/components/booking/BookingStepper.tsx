@@ -27,9 +27,9 @@ const getStepLabel = (step: number): string => {
   switch (step) {
     case 1: return 'Select Vehicle';
     case 2: return 'Select Service';
-    case 3: return 'Booking Details';
-    case 4: return 'Payment';
-    case 5: return 'Confirmation';
+    case 3: return 'Select Garage';
+    case 4: return 'Booking Details';
+    case 5: return 'Payment';
     default: return '';
   }
 };

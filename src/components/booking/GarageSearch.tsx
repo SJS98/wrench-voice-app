@@ -65,6 +65,7 @@ const GarageSearch = ({ vehicleType, onGarageSelect }: GarageSearchProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredGarages, setFilteredGarages] = useState<Garage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAllGarages, setShowAllGarages] = useState(false);
   
   useEffect(() => {
     // Simulate loading garages
@@ -74,7 +75,12 @@ const GarageSearch = ({ vehicleType, onGarageSelect }: GarageSearchProps) => {
             garage.supportedVehicles?.includes(vehicleType))
         : mockGarages;
       
-      setFilteredGarages(filtered);
+      // Sort garages by rating (highest first)
+      const sortedGarages = [...filtered].sort((a, b) => 
+        (b.rating || 0) - (a.rating || 0)
+      );
+      
+      setFilteredGarages(sortedGarages);
       setLoading(false);
     }, 1000);
     
@@ -97,78 +103,133 @@ const GarageSearch = ({ vehicleType, onGarageSelect }: GarageSearchProps) => {
       return matchesVehicleType && matchesSearch;
     });
     
-    setFilteredGarages(filtered);
+    // Sort by rating
+    const sortedGarages = [...filtered].sort((a, b) => 
+      (b.rating || 0) - (a.rating || 0)
+    );
+    
+    setFilteredGarages(sortedGarages);
+    setShowAllGarages(true);
   };
+
+  // Get the best recommended garage (first in the sorted list)
+  const bestGarage = filteredGarages.length > 0 ? filteredGarages[0] : null;
   
   return (
     <div className="py-4">
-      <form onSubmit={handleSearch} className="mb-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search garages by name or location"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 pr-4"
-          />
-        </div>
-      </form>
-      
-      <div className="mb-4 flex items-center">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="bg-gray-100"
-        >
-          <MapPin className="h-4 w-4 mr-1" />
-          Near Me
-        </Button>
-        
-        <div className="ml-auto text-sm text-gray-500">
-          {filteredGarages.length} garages found
-        </div>
-      </div>
-      
-      {loading ? (
+      {!showAllGarages && !loading && bestGarage ? (
         <div className="space-y-4">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="p-4 border rounded-lg animate-pulse">
-              <div className="h-32 bg-gray-200 rounded mb-3"></div>
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+          <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+            <h3 className="text-lg font-medium text-green-800 mb-1">Recommended Garage</h3>
+            <p className="text-sm text-green-700 mb-4">
+              We've found the best garage for you based on ratings and service quality
+            </p>
+            <div className="mb-4">
+              <GarageCard 
+                garage={bestGarage}
+                selectedVehicleType={vehicleType || undefined}
+              />
             </div>
-          ))}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                onClick={() => onGarageSelect(bestGarage)}
+                className="flex-1 bg-garage-purple hover:bg-garage-purple/90"
+              >
+                Continue with this garage
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => setShowAllGarages(true)}
+                className="flex-1"
+              >
+                View other options
+              </Button>
+            </div>
+          </div>
         </div>
       ) : (
-        <div className="space-y-4">
-          {filteredGarages.length > 0 ? (
-            filteredGarages.map(garage => (
-              <div key={garage.id} onClick={() => onGarageSelect(garage)}>
-                <GarageCard 
-                  garage={garage}
-                  selectedVehicleType={vehicleType || undefined}
-                />
-              </div>
-            ))
+        <>
+          <form onSubmit={handleSearch} className="mb-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search garages by name or location"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 pr-4"
+              />
+            </div>
+          </form>
+          
+          <div className="mb-4 flex items-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="bg-gray-100"
+            >
+              <MapPin className="h-4 w-4 mr-1" />
+              Near Me
+            </Button>
+            
+            <div className="ml-auto text-sm text-gray-500">
+              {filteredGarages.length} garages found
+            </div>
+          </div>
+          
+          {loading ? (
+            <div className="space-y-4">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="p-4 border rounded-lg animate-pulse">
+                  <div className="h-32 bg-gray-200 rounded mb-3"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              ))}
+            </div>
           ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">No garages found matching your criteria</p>
+            <div className="space-y-4">
+              {filteredGarages.length > 0 ? (
+                filteredGarages.map(garage => (
+                  <div key={garage.id} onClick={() => onGarageSelect(garage)}>
+                    <GarageCard 
+                      garage={garage}
+                      selectedVehicleType={vehicleType || undefined}
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">No garages found matching your criteria</p>
+                  <Button 
+                    variant="link" 
+                    onClick={() => {
+                      setSearchQuery('');
+                      setFilteredGarages(vehicleType 
+                        ? mockGarages.filter(g => g.supportedVehicles?.includes(vehicleType))
+                        : mockGarages
+                      );
+                    }}
+                  >
+                    Clear search
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {showAllGarages && filteredGarages.length > 0 && (
+            <div className="mt-4">
               <Button 
-                variant="link" 
-                onClick={() => {
-                  setSearchQuery('');
-                  setFilteredGarages(vehicleType 
-                    ? mockGarages.filter(g => g.supportedVehicles?.includes(vehicleType))
-                    : mockGarages
-                  );
-                }}
+                variant="outline" 
+                onClick={() => setShowAllGarages(false)}
+                className="w-full"
               >
-                Clear search
+                Show recommended garage
               </Button>
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );
