@@ -7,10 +7,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { 
   Car, 
   Wrench, 
-  SOS, 
+  AlertTriangle, 
   ChevronRight, 
   MapPin, 
-  Tool, 
+  Wrench as Tool, 
   Calendar,
   ShoppingBag,
   Camera

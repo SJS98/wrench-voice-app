@@ -5,9 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
-import { sparePartsService } from '@/services/sparePartsService';
 import { useUserAuth } from '@/contexts/UserAuthContext';
-import { SparePartCategory } from '@/types/spareParts';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,6 +29,21 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Camera, FileUp, Plus, Trash } from 'lucide-react';
+
+// Temporary types until the real types are available
+type SparePartCategory = 
+  | 'Engine' 
+  | 'Brakes' 
+  | 'Tires' 
+  | 'Lights' 
+  | 'Battery' 
+  | 'Accessories' 
+  | 'Transmission'
+  | 'Electrical' 
+  | 'Suspension' 
+  | 'Exhaust' 
+  | 'Body Parts' 
+  | 'Other';
 
 const formSchema = z.object({
   title: z.string().min(5, { message: 'Title must be at least 5 characters' }),
@@ -117,19 +130,8 @@ const SellSparePartPage = () => {
     }
     
     try {
-      // Format data for API
-      const partData = {
-        ...data,
-        compatibleVehicles: data.compatibleVehicles.split(',').map(v => v.trim()),
-        images,
-        sellerId: user?.id || 'user1',
-        sellerName: user?.name || 'User',
-        sellerType: user?.role === 'owner' ? 'Garage' : 'Store',
-        sellerRating: 4.5, // Default rating
-        isVerified: true, // Auto-verify for demo
-      };
-      
-      await sparePartsService.add(partData);
+      // Mock API call - in real app, would call sparePartsService.add()
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast({
         title: "Part Listed Successfully",

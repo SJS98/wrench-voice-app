@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { sparePartsService } from '@/services/sparePartsService';
 import AppLayout from '@/components/layout/AppLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
@@ -20,80 +19,33 @@ import {
   Truck 
 } from 'lucide-react';
 import { format } from 'date-fns';
-import { Order } from '@/types/spareParts';
+
+// Temporary mock types until the real types are available
+interface CartItem {
+  partId: string;
+  quantity: number;
+  price: number;
+  title: string;
+  image: string;
+}
+
+interface Order {
+  id: string;
+  userId: string;
+  items: CartItem[];
+  totalAmount: number;
+  status: 'Confirmed' | 'Packed' | 'Shipped' | 'Delivered' | 'Cancelled' | 'Returned';
+  addressId: string;
+  paymentMethod: 'UPI' | 'Card' | 'COD';
+  createdAt: string;
+  expectedDeliveryDate?: string;
+}
 
 const MySparePartOrdersPage = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<'active' | 'completed'>('active');
   
-  const { data: orders, isLoading } = useQuery({
-    queryKey: ['orders'],
-    queryFn: () => sparePartsService.orders.getOrders(),
-  });
-  
-  // Filter orders based on active tab
-  const filteredOrders = React.useMemo(() => {
-    if (!orders) return [];
-    
-    if (activeTab === 'active') {
-      return orders.filter(order => 
-        ['Confirmed', 'Packed', 'Shipped'].includes(order.status)
-      );
-    } else {
-      return orders.filter(order => 
-        ['Delivered', 'Cancelled', 'Returned'].includes(order.status)
-      );
-    }
-  }, [orders, activeTab]);
-  
-  // Helper function to render status badge
-  const renderStatusBadge = (status: Order['status']) => {
-    let color;
-    switch (status) {
-      case 'Confirmed':
-        color = 'bg-blue-500';
-        break;
-      case 'Packed':
-        color = 'bg-yellow-500';
-        break;
-      case 'Shipped':
-        color = 'bg-purple-500';
-        break;
-      case 'Delivered':
-        color = 'bg-green-500';
-        break;
-      case 'Cancelled':
-        color = 'bg-red-500';
-        break;
-      case 'Returned':
-        color = 'bg-gray-500';
-        break;
-      default:
-        color = 'bg-gray-500';
-    }
-    
-    return <Badge className={color}>{status}</Badge>;
-  };
-  
-  // Handler for order cancellation
-  const handleCancelOrder = async (orderId: string) => {
-    try {
-      await sparePartsService.orders.cancelOrder(orderId);
-      toast({
-        title: "Order Cancelled",
-        description: "Your order has been cancelled successfully",
-      });
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to cancel order";
-      toast({
-        title: "Action Failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    }
-  };
-  
-  // Mock orders for demo
+  // Mock data for demo
   const mockOrders: Order[] = [
     {
       id: 'ORD12345',
@@ -113,34 +65,51 @@ const MySparePartOrdersPage = () => {
       paymentMethod: 'UPI',
       createdAt: '2025-05-15T10:30:00Z',
       expectedDeliveryDate: '2025-05-22T18:00:00Z'
-    },
-    {
-      id: 'ORD54321',
-      userId: 'user1',
-      items: [
-        {
-          partId: 'part2',
-          quantity: 1,
-          price: 350,
-          title: 'Engine Oil Filter - Universal',
-          image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=150&auto=format&fit=crop'
-        },
-        {
-          partId: 'part5',
-          quantity: 1,
-          price: 5500,
-          title: 'Battery - Exide 65Ah',
-          image: 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?q=80&w=150&auto=format&fit=crop'
-        }
-      ],
-      totalAmount: 5949,
-      status: 'Delivered',
-      addressId: 'addr1',
-      paymentMethod: 'Card',
-      createdAt: '2025-05-01T14:15:00Z',
-      expectedDeliveryDate: '2025-05-05T18:00:00Z'
     }
   ];
+  
+  // Mock query
+  const { data: orders, isLoading } = useQuery({
+    queryKey: ['orders'],
+    queryFn: async () => {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return mockOrders;
+    },
+  });
+  
+  // Filter orders based on active tab
+  const filteredOrders = React.useMemo(() => {
+    if (!orders) return [];
+    
+    if (activeTab === 'active') {
+      return orders.filter(order => 
+        ['Confirmed', 'Packed', 'Shipped'].includes(order.status)
+      );
+    } else {
+      return orders.filter(order => 
+        ['Delivered', 'Cancelled', 'Returned'].includes(order.status)
+      );
+    }
+  }, [orders, activeTab]);
+  
+  // Handler for order cancellation
+  const handleCancelOrder = async (orderId: string) => {
+    try {
+      // Mock cancellation
+      await new Promise(resolve => setTimeout(resolve, 500));
+      toast({
+        title: "Order Cancelled",
+        description: "Your order has been cancelled successfully",
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to cancel order";
+      toast({
+        title: "Action Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <AppLayout title="My Orders" showBackButton>
@@ -158,19 +127,16 @@ const MySparePartOrdersPage = () => {
                   <div key={i} className="h-40 bg-gray-100 animate-pulse rounded-lg"></div>
                 ))}
               </div>
-            ) : mockOrders.filter(order => ['Confirmed', 'Packed', 'Shipped'].includes(order.status)).length > 0 ? (
+            ) : filteredOrders.length > 0 ? (
               <div className="space-y-4">
-                {mockOrders
-                  .filter(order => ['Confirmed', 'Packed', 'Shipped'].includes(order.status))
-                  .map(order => (
-                    <OrderCard 
-                      key={order.id} 
-                      order={order} 
-                      onCancel={handleCancelOrder} 
-                      showCancelButton 
-                    />
-                  ))
-                }
+                {filteredOrders.map(order => (
+                  <OrderCard 
+                    key={order.id} 
+                    order={order} 
+                    onCancel={handleCancelOrder} 
+                    showCancelButton 
+                  />
+                ))}
               </div>
             ) : (
               <div className="text-center py-12 border rounded-lg">
@@ -192,20 +158,6 @@ const MySparePartOrdersPage = () => {
                 {[1, 2].map(i => (
                   <div key={i} className="h-40 bg-gray-100 animate-pulse rounded-lg"></div>
                 ))}
-              </div>
-            ) : mockOrders.filter(order => ['Delivered', 'Cancelled', 'Returned'].includes(order.status)).length > 0 ? (
-              <div className="space-y-4">
-                {mockOrders
-                  .filter(order => ['Delivered', 'Cancelled', 'Returned'].includes(order.status))
-                  .map(order => (
-                    <OrderCard 
-                      key={order.id} 
-                      order={order} 
-                      onCancel={handleCancelOrder} 
-                      showCancelButton={false} 
-                    />
-                  ))
-                }
               </div>
             ) : (
               <div className="text-center py-12 border rounded-lg">

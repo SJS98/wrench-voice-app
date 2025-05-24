@@ -4,7 +4,7 @@ import {
   Home,
   Search,
   Wrench,
-  SOS,
+  AlertTriangle,
   User,
   Car,
   ShoppingBag,
@@ -50,7 +50,7 @@ const MobileNavigation = () => {
             isActive('/sos') ? 'text-garage-purple' : 'text-gray-500'
           }`}
         >
-          <SOS className="h-5 w-5" />
+          <AlertTriangle className="h-5 w-5" />
           <span className="text-xs mt-1">SOS</span>
         </Link>
 
