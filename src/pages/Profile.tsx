@@ -149,7 +149,7 @@ const ProfilePage = () => {
         <div className="space-y-3">
           {menuItems.map((item, index) => (
             <Link key={index} to={item.path}>
-              <div className="flex items-center justify-between p-3 bg-white rounded-lg border hover:border-garage-purple/30 hover:bg-garage-purple/5 transition-colors">
+              <div className="flex items-center justify-between p-3 bg-white rounded-lg border hover:border-garage-purple/30 hover:bg-garage-purple/5 transition-colors my-1.5">
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-full ${item.color}`}>
                     <span className={item.textColor}>{item.icon}</span>
@@ -162,13 +162,13 @@ const ProfilePage = () => {
           ))}
         </div>
 
-        <div className="mt-8">
+        <div className="mt-6">
           <Button
             variant="ghost"
             className="w-full text-red-500 hover:text-red-600 hover:bg-red-50"
             onClick={handleLogout}
           >
-            <LogOut className="mr-2 h-4 w-4" /> Log Out
+            <LogOut className="mr-1 h-4 w-4" /> Log Out
           </Button>
         </div>
 

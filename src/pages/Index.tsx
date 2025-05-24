@@ -1,19 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import AppLayout from '@/components/layout/AppLayout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { 
-  Car, 
-  Wrench, 
-  AlertTriangle, 
-  ChevronRight, 
-  MapPin, 
-  Wrench as Tool, 
+import React from "react";
+import { Link } from "react-router-dom";
+import AppLayout from "@/components/layout/AppLayout";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Car,
+  Wrench,
+  AlertTriangle,
+  ChevronRight,
+  MapPin,
+  Wrench as Tool,
   Calendar,
   ShoppingBag,
-  Camera
-} from 'lucide-react';
+  Camera,
+} from "lucide-react";
 
 const HomePage = () => {
   return (
@@ -21,59 +21,77 @@ const HomePage = () => {
       <div className="p-4 pb-20">
         {/* Hero Section */}
         <div className="mb-6 relative overflow-hidden rounded-lg">
-          <img 
-            src="https://images.unsplash.com/photo-1597766353939-b683bfd58b28?q=80&w=500&auto=format&fit=crop" 
+          <img
+            src="src/assests/images/homepage-banner.png"
             alt="Mechanic working on car"
             className="w-full h-48 object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20 flex flex-col justify-end p-4">
-            <h1 className="text-white text-xl font-bold mb-1">Welcome to Mr. Mechanic</h1>
-            <p className="text-white/90 text-sm mb-4">Your one-stop solution for vehicle care</p>
+            <h1 className="text-white text-xl font-bold mb-1">
+              Welcome to Mr. Mechanic
+            </h1>
+            <p className="text-white/90 text-sm mb-4">
+              Your one-stop solution for vehicle care
+            </p>
             <Link to="/services">
-              <Button>Book a Service</Button>
+              <Button variant="outline">Book a Service</Button>
             </Link>
           </div>
         </div>
-        
+
         {/* Quick Actions */}
         <h2 className="text-lg font-semibold mb-3">Quick Actions</h2>
         <div className="grid grid-cols-3 gap-3 mb-6">
-          <Link to="/services" className="flex flex-col items-center justify-center bg-garage-purple/10 p-3 rounded-lg">
+          <Link
+            to="/services"
+            className="flex flex-col items-center justify-center bg-garage-purple/10 p-3 rounded-lg"
+          >
             <Wrench className="h-6 w-6 text-garage-purple mb-2" />
             <span className="text-xs text-center">Book Service</span>
           </Link>
-          
-          <Link to="/spare-parts" className="flex flex-col items-center justify-center bg-garage-purple/10 p-3 rounded-lg">
+
+          <Link
+            to="/spare-parts"
+            className="flex flex-col items-center justify-center bg-garage-purple/10 p-3 rounded-lg"
+          >
             <ShoppingBag className="h-6 w-6 text-garage-purple mb-2" />
             <span className="text-xs text-center">Buy Parts</span>
           </Link>
-          
-          <Link to="/sos" className="flex flex-col items-center justify-center bg-red-100 p-3 rounded-lg">
+
+          <Link
+            to="/sos"
+            className="flex flex-col items-center justify-center bg-red-100 p-3 rounded-lg"
+          >
             <AlertTriangle className="h-6 w-6 text-red-500 mb-2" />
             <span className="text-xs text-center">SOS</span>
           </Link>
         </div>
-        
+
         {/* Used Vehicles */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-lg font-semibold">Buy Used Vehicles</h2>
-            <Link to="/used-vehicles" className="text-sm text-garage-purple flex items-center">
+            <Link
+              to="/used-vehicles"
+              className="text-sm text-garage-purple flex items-center"
+            >
               View All
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
-          
+
           <Card>
             <CardContent className="p-3">
               <div className="flex">
-                <img 
-                  src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=150&auto=format&fit=crop" 
+                <img
+                  src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=150&auto=format&fit=crop"
                   alt="Used car"
                   className="w-24 h-24 rounded-md object-cover"
                 />
                 <div className="ml-3 flex-1">
-                  <h3 className="font-medium mb-1">Find Your Perfect Vehicle</h3>
+                  <h3 className="font-medium mb-1">
+                    Find Your Perfect Vehicle
+                  </h3>
                   <p className="text-sm text-muted-foreground mb-2">
                     Browse certified used cars, bikes & more
                   </p>
@@ -88,22 +106,25 @@ const HomePage = () => {
             </CardContent>
           </Card>
         </div>
-        
+
         {/* Spare Parts Section - New */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-lg font-semibold">Spare Parts</h2>
-            <Link to="/spare-parts" className="text-sm text-garage-purple flex items-center">
+            <Link
+              to="/spare-parts"
+              className="text-sm text-garage-purple flex items-center"
+            >
               View All
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
-          
+
           <Card>
             <CardContent className="p-3">
               <div className="flex">
-                <img 
-                  src="https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=150&auto=format&fit=crop" 
+                <img
+                  src="https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=150&auto=format&fit=crop"
                   alt="Spare parts"
                   className="w-24 h-24 rounded-md object-cover"
                 />
@@ -131,13 +152,13 @@ const HomePage = () => {
             </CardContent>
           </Card>
         </div>
-        
+
         {/* Service Media Section - New */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-lg font-semibold">Service Media</h2>
           </div>
-          
+
           <Card>
             <CardContent className="p-3">
               <div className="flex">
@@ -160,17 +181,20 @@ const HomePage = () => {
             </CardContent>
           </Card>
         </div>
-        
+
         {/* Nearby Garages */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-lg font-semibold">Nearby Garages</h2>
-            <Link to="/search" className="text-sm text-garage-purple flex items-center">
+            <Link
+              to="/search"
+              className="text-sm text-garage-purple flex items-center"
+            >
               View All
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
-          
+
           <div className="space-y-3">
             <div className="bg-white rounded-lg p-3 shadow-sm border">
               <div className="flex justify-between">
@@ -186,7 +210,7 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg p-3 shadow-sm border">
               <div className="flex justify-between">
                 <div>
