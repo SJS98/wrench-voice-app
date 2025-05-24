@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Star, MapPin, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,7 @@ interface GarageCardProps {
 }
 
 const GarageCard = ({ garage, isSaved = false, className, selectedVehicleType }: GarageCardProps) => {
+  const navigate = useNavigate();
   const [saved, setSaved] = useState(isSaved);
 
   // If supportedVehicles is not defined, assume garage supports all vehicle types
@@ -41,6 +42,18 @@ const GarageCard = ({ garage, isSaved = false, className, selectedVehicleType }:
     e.preventDefault();
     e.stopPropagation();
     setSaved(!saved);
+  };
+
+  const handleBookNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/book-service/${garage.id}`);
+  };
+
+  const handleViewDetails = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/garage/${garage.id}`);
   };
 
   return (
@@ -127,17 +140,20 @@ const GarageCard = ({ garage, isSaved = false, className, selectedVehicleType }:
         </div>
         
         <div className="mt-4 flex justify-between gap-2">
-          <Link to={`/garage/${garage.id}`} className="flex-1">
-            <Button variant="outline" className="w-full">View Details</Button>
-          </Link>
-          <Link to={`/book-service/${garage.id}`} className="flex-1">
-            <Button 
-              className="w-full bg-garage-purple hover:bg-garage-purple/90" 
-              disabled={!isCompatible}
-            >
-              Book Now
-            </Button>
-          </Link>
+          <Button 
+            variant="outline" 
+            className="flex-1"
+            onClick={handleViewDetails}
+          >
+            View Details
+          </Button>
+          <Button 
+            className="flex-1 bg-garage-purple hover:bg-garage-purple/90" 
+            disabled={!isCompatible}
+            onClick={handleBookNow}
+          >
+            Book Now
+          </Button>
         </div>
       </div>
     </div>
