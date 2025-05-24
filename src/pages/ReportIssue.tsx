@@ -38,7 +38,7 @@ const ReportIssuePage = () => {
   const form = useForm<ReportIssueForm>({
     resolver: zodResolver(reportIssueSchema),
     defaultValues: {
-      booking: bookingId || '',
+      bookingId: bookingId || '',
       issueType: 'poor-service',
       description: '',
       isCritical: false,
@@ -87,7 +87,7 @@ const ReportIssuePage = () => {
 
       toast({
         title: 'Issue Reported',
-        description: 'Your complaint has been logged. We'll reach out soon.'
+        description: "Your complaint has been logged. We'll reach out soon."
       });
 
       navigate('/my-bookings');
