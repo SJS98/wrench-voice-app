@@ -1,3 +1,4 @@
+
 import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
@@ -12,11 +13,13 @@ import {
   Phone, 
   Share,
   Star,
-  Camera
+  Camera,
+  AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/components/layout/AppLayout';
+import GarageStatus from '@/components/garage/GarageStatus';
 
 // Mock booking data - in a real app, you would fetch this based on ID
 const mockBooking = {
@@ -34,7 +37,7 @@ const mockBooking = {
   },
   date: new Date('2025-05-25'),
   timeSlot: '10:00 AM',
-  status: 'upcoming',
+  status: 'completed', // Changed to completed to show Report Issue button
   totalPrice: 3298,
   trackingUpdates: [
     {
@@ -44,21 +47,22 @@ const mockBooking = {
     },
     {
       status: 'Pre-Service Inspection',
-      time: 'Will update on 25 May',
-      description: 'Initial vehicle inspection before service begins.'
+      time: '25 May, 10:15 AM',
+      description: 'Initial vehicle inspection completed.'
     },
     {
       status: 'Service In Progress',
-      time: 'Will update on 25 May',
+      time: '25 May, 10:45 AM',
       description: 'Vehicle service is in progress.'
     },
     {
       status: 'Service Complete',
-      time: 'Will update on 25 May',
+      time: '25 May, 12:30 PM',
       description: 'Service has been completed and vehicle is ready for pickup.'
     }
   ],
-  hasMedia: true // Flag to indicate if this booking has media items
+  hasMedia: true, // Flag to indicate if this booking has media items
+  hasDispute: false // Flag to indicate if there's an active dispute for this booking
 };
 
 const BookingDetailsPage = () => {
@@ -153,7 +157,7 @@ const BookingDetailsPage = () => {
               </div>
             </div>
 
-            {/* Service Media Section - New */}
+            {/* Service Media Section */}
             {mockBooking.hasMedia && (
               <div className="bg-white rounded-lg border p-4">
                 <h3 className="font-medium mb-3">Service Media</h3>
@@ -181,9 +185,17 @@ const BookingDetailsPage = () => {
               </div>
             )}
 
-            {/* Garage Details */}
+            {/* Garage Details with Status - UPDATED */}
             <div className="bg-white rounded-lg border p-4">
               <h3 className="font-medium mb-3">Garage Details</h3>
+              
+              {/* Display garage status */}
+              <div className="mb-4">
+                <GarageStatus 
+                  garageId={mockBooking.garageId} 
+                  size="sm"
+                />
+              </div>
               
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
@@ -217,6 +229,52 @@ const BookingDetailsPage = () => {
                 </Link>
               </div>
             </div>
+
+            {/* Report Issue Button - NEW */}
+            {mockBooking.status === 'completed' && !mockBooking.hasDispute && (
+              <div className="bg-white rounded-lg border p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-red-100 p-2 rounded-full">
+                      <AlertCircle className="h-4 w-4 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Had an issue with this service?</p>
+                      <p className="text-xs text-muted-foreground">
+                        Report problems like poor service or part theft
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <Link to={`/report-issue/${mockBooking.id}`}>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="border-red-200 text-red-600 hover:bg-red-50"
+                    >
+                      Report Issue
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            )}
+            
+            {/* Dispute Status - NEW */}
+            {mockBooking.hasDispute && (
+              <div className="bg-yellow-50 rounded-lg border border-yellow-200 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-yellow-100 p-2 rounded-full">
+                    <AlertTriangle className="h-5 w-5 text-yellow-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-yellow-800">Dispute in Progress</p>
+                    <p className="text-sm text-yellow-700">
+                      Your issue report is being investigated. We'll update you soon.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Actions */}
             {mockBooking.status === 'upcoming' && (
@@ -270,9 +328,9 @@ const BookingDetailsPage = () => {
                   <div key={index} className="flex mb-6 last:mb-0">
                     <div className="relative mr-4">
                       <div className={`w-4 h-4 rounded-full ${
-                        index === 0 ? 'bg-green-500' : 'bg-gray-300'
+                        index === 0 || mockBooking.status === 'completed' ? 'bg-green-500' : 'bg-gray-300'
                       } flex items-center justify-center`}>
-                        {index === 0 && (
+                        {(index === 0 || mockBooking.status === 'completed') && (
                           <CheckCircle className="h-3 w-3 text-white" />
                         )}
                       </div>

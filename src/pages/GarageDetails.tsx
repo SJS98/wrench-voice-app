@@ -9,7 +9,8 @@ import {
   MessageSquare, 
   Calendar, 
   Info, 
-  ChevronRight 
+  ChevronRight,
+  AlertCircle 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -17,6 +18,7 @@ import AppLayout from '@/components/layout/AppLayout';
 import ServiceCard, { Service } from '@/components/service/ServiceCard';
 import { VehicleType } from '@/types/vehicles';
 import VehicleIcon from '@/components/vehicles/VehicleIcon';
+import GarageStatus from '@/components/garage/GarageStatus';
 
 // Mock garage data
 const mockGarageDetails = {
@@ -137,6 +139,11 @@ const GarageDetailsPage = () => {
             </div>
             
             <p className="text-muted-foreground">{garage.type}</p>
+            
+            {/* Garage Status - NEW */}
+            <div className="my-3">
+              <GarageStatus garageId={garage.id} />
+            </div>
             
             <div className="mt-3 space-y-2">
               <div className="flex items-center gap-2 text-sm">
@@ -275,7 +282,7 @@ const GarageDetailsPage = () => {
                     <ChevronRight className="h-5 w-5 text-muted-foreground" />
                   </div>
                   
-                  <div className="flex items-center justify-between p-4">
+                  <div className="flex items-center justify-between p-4 border-b">
                     <div className="flex items-center gap-3">
                       <div className="bg-garage-purple/10 p-2 rounded-full">
                         <Info className="h-5 w-5 text-garage-purple" />
@@ -287,6 +294,22 @@ const GarageDetailsPage = () => {
                     </div>
                     <ChevronRight className="h-5 w-5 text-muted-foreground" />
                   </div>
+                  
+                  {/* Trust Policy Link - NEW */}
+                  <Link to="/trust-policy">
+                    <div className="flex items-center justify-between p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-blue-100 p-2 rounded-full">
+                          <AlertCircle className="h-5 w-5 text-blue-700" />
+                        </div>
+                        <div>
+                          <h3 className="font-medium">Trust & Dispute Policy</h3>
+                          <p className="text-xs text-muted-foreground">How we protect you</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                  </Link>
                 </div>
               </div>
             </TabsContent>
