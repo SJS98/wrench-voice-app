@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export interface User {
   id: string;
@@ -59,6 +59,11 @@ interface UserAuthContextType {
 
 const UserAuthContext = createContext<UserAuthContextType | undefined>(undefined);
 
+// Local storage keys
+const AUTH_STORAGE_KEY = 'garage_app_auth_user';
+const GARAGE_STORAGE_KEY = 'garage_app_garage_data';
+const CART_STORAGE_KEY = 'garage_app_cart_items';
+
 // Mock owner data
 const MOCK_OWNER: User = {
   id: '1',
@@ -94,11 +99,84 @@ const MOCK_GARAGE: GarageData = {
   completedBookings: 132
 };
 
+// Utility functions for localStorage
+const saveToStorage = (key: string, data: any) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (error) {
+    console.error('Failed to save to localStorage:', error);
+  }
+};
+
+const loadFromStorage = (key: string) => {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : null;
+  } catch (error) {
+    console.error('Failed to load from localStorage:', error);
+    return null;
+  }
+};
+
+const removeFromStorage = (key: string) => {
+  try {
+    localStorage.removeItem(key);
+  } catch (error) {
+    console.error('Failed to remove from localStorage:', error);
+  }
+};
+
 export const UserAuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [garageData, setGarageData] = useState<GarageData | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  // Load data from localStorage on component mount
+  useEffect(() => {
+    const savedUser = loadFromStorage(AUTH_STORAGE_KEY);
+    const savedGarageData = loadFromStorage(GARAGE_STORAGE_KEY);
+    const savedCartItems = loadFromStorage(CART_STORAGE_KEY);
+
+    if (savedUser) {
+      setUser(savedUser);
+    }
+    if (savedGarageData) {
+      setGarageData(savedGarageData);
+    }
+    if (savedCartItems) {
+      setCartItems(savedCartItems);
+    }
+
+    setLoading(false);
+  }, []);
+
+  // Save user data to localStorage whenever it changes
+  useEffect(() => {
+    if (user) {
+      saveToStorage(AUTH_STORAGE_KEY, user);
+    } else {
+      removeFromStorage(AUTH_STORAGE_KEY);
+    }
+  }, [user]);
+
+  // Save garage data to localStorage whenever it changes
+  useEffect(() => {
+    if (garageData) {
+      saveToStorage(GARAGE_STORAGE_KEY, garageData);
+    } else {
+      removeFromStorage(GARAGE_STORAGE_KEY);
+    }
+  }, [garageData]);
+
+  // Save cart items to localStorage whenever they change
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      saveToStorage(CART_STORAGE_KEY, cartItems);
+    } else {
+      removeFromStorage(CART_STORAGE_KEY);
+    }
+  }, [cartItems]);
 
   const login = async (email: string, password: string) => {
     setLoading(true);
@@ -119,6 +197,10 @@ export const UserAuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     setGarageData(null);
     setCartItems([]);
+    // Clear all auth-related data from localStorage
+    removeFromStorage(AUTH_STORAGE_KEY);
+    removeFromStorage(GARAGE_STORAGE_KEY);
+    removeFromStorage(CART_STORAGE_KEY);
   };
 
   const register = async (name: string, email: string, password: string, role: 'owner' | 'customer' = 'customer') => {
