@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AppLayout from '@/components/layout/AppLayout';
@@ -50,7 +49,7 @@ const HomePage = () => {
           </Link>
           
           <Link to="/sos" className="flex flex-col items-center justify-center bg-red-100 p-3 rounded-lg">
-            <SOS className="h-6 w-6 text-red-500 mb-2" />
+            <AlertTriangle className="h-6 w-6 text-red-500 mb-2" />
             <span className="text-xs text-center">SOS</span>
           </Link>
         </div>
