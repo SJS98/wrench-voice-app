@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserAuth } from '@/contexts/UserAuthContext';
@@ -8,8 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TutorialLauncher } from '@/components/tutorial/TutorialLauncher';
 import { useToast } from '@/hooks/use-toast';
-import { Bell, User, Sliders } from 'lucide-react';
+import { Bell, User, Sliders, Play } from 'lucide-react';
 
 const Settings = () => {
   const { user } = useUserAuth();
@@ -154,6 +154,20 @@ const Settings = () => {
               </div>
 
               <div className="space-y-4">
+                {/* Tutorial Section */}
+                <div className="p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="space-y-0.5">
+                      <Label className="text-base">App Tutorial</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Learn how to use the app with voice guidance
+                      </p>
+                    </div>
+                    <Play className="h-5 w-5 text-garage-purple" />
+                  </div>
+                  <TutorialLauncher variant="button" className="w-full mt-2" />
+                </div>
+
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label>Dark Mode</Label>

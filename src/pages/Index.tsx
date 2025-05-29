@@ -1,8 +1,10 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { TutorialLauncher } from "@/components/tutorial/TutorialLauncher";
 import {
   Car,
   Wrench,
@@ -20,7 +22,7 @@ const HomePage = () => {
     <AppLayout title="Mr. Mechanic" showBackButton={false}>
       <div className="p-4 pb-20">
         {/* Hero Section */}
-        <div className="mb-6 relative overflow-hidden rounded-lg">
+        <div className="mb-6 relative overflow-hidden rounded-lg hero-section">
           <img
             src="src/assests/images/homepage-banner.png"
             alt="Mechanic working on car"
@@ -33,10 +35,18 @@ const HomePage = () => {
             <p className="text-white/90 text-sm mb-4">
               Your one-stop solution for vehicle care
             </p>
-            <Link to="/services">
-              <Button variant="outline">Book a Service</Button>
-            </Link>
+            <div className="flex gap-2">
+              <Link to="/services">
+                <Button variant="outline">Book a Service</Button>
+              </Link>
+              <TutorialLauncher variant="button" />
+            </div>
           </div>
+        </div>
+
+        {/* Tutorial Card */}
+        <div className="mb-6">
+          <TutorialLauncher variant="card" />
         </div>
 
         {/* Quick Actions */}
