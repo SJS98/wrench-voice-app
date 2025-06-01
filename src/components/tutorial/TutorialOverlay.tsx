@@ -38,9 +38,65 @@ export const TutorialOverlay = () => {
   const navigate = useNavigate();
   const [highlightedElement, setHighlightedElement] = useState<Element | null>(null);
   const [elementPosition, setElementPosition] = useState({ top: 0, left: 0, width: 0, height: 0 });
+  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0, position: 'bottom' });
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const currentStepData = steps[currentStep];
+
+  // Calculate optimal popup position
+  const calculatePopupPosition = (elementRect: DOMRect) => {
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+    const popupHeight = 280; // Estimated popup height
+    const popupWidth = 384; // max-w-md = 384px
+    const margin = 16;
+
+    let position = 'bottom';
+    let top = elementRect.bottom + window.scrollY + margin;
+    let left = elementRect.left + window.scrollX + (elementRect.width / 2) - (popupWidth / 2);
+
+    // Check if popup fits below the element
+    if (elementRect.bottom + popupHeight + margin > viewportHeight) {
+      // Try positioning above
+      if (elementRect.top - popupHeight - margin > 0) {
+        position = 'top';
+        top = elementRect.top + window.scrollY - popupHeight - margin;
+      } else {
+        // Try positioning to the side
+        if (elementRect.right + popupWidth + margin < viewportWidth) {
+          position = 'right';
+          top = elementRect.top + window.scrollY + (elementRect.height / 2) - (popupHeight / 2);
+          left = elementRect.right + window.scrollX + margin;
+        } else if (elementRect.left - popupWidth - margin > 0) {
+          position = 'left';
+          top = elementRect.top + window.scrollY + (elementRect.height / 2) - (popupHeight / 2);
+          left = elementRect.left + window.scrollX - popupWidth - margin;
+        } else {
+          // Fall back to bottom with viewport constraint
+          position = 'bottom';
+          top = Math.min(
+            elementRect.bottom + window.scrollY + margin,
+            window.scrollY + viewportHeight - popupHeight - margin
+          );
+        }
+      }
+    }
+
+    // Ensure popup stays within horizontal viewport bounds
+    if (position === 'top' || position === 'bottom') {
+      left = Math.max(margin, Math.min(left, viewportWidth - popupWidth - margin));
+    }
+
+    // Ensure popup stays within vertical viewport bounds for side positions
+    if (position === 'left' || position === 'right') {
+      top = Math.max(
+        window.scrollY + margin,
+        Math.min(top, window.scrollY + viewportHeight - popupHeight - margin)
+      );
+    }
+
+    return { top, left, position };
+  };
 
   // Check if we need to navigate to the correct page for the current step
   useEffect(() => {
@@ -64,6 +120,10 @@ export const TutorialOverlay = () => {
           width: rect.width,
           height: rect.height,
         });
+
+        // Calculate and set popup position
+        const popupPos = calculatePopupPosition(rect);
+        setPopupPosition(popupPos);
 
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
@@ -110,6 +170,25 @@ export const TutorialOverlay = () => {
     };
   }, [currentStep, isActive, currentStepData, language, isVoiceEnabled, isPaused, handleElementClick, navigate]);
 
+  // Recalculate popup position on window resize or scroll
+  useEffect(() => {
+    const handleReposition = () => {
+      if (highlightedElement) {
+        const rect = highlightedElement.getBoundingClientRect();
+        const popupPos = calculatePopupPosition(rect);
+        setPopupPosition(popupPos);
+      }
+    };
+
+    window.addEventListener('resize', handleReposition);
+    window.addEventListener('scroll', handleReposition);
+
+    return () => {
+      window.removeEventListener('resize', handleReposition);
+      window.removeEventListener('scroll', handleReposition);
+    };
+  }, [highlightedElement]);
+
   const handleNext = () => {
     voiceSynthesis.stop();
     nextStep();
@@ -149,6 +228,22 @@ export const TutorialOverlay = () => {
 
   if (!isActive || !currentStepData) return null;
 
+  // Get arrow indicator based on popup position
+  const getArrowClasses = () => {
+    switch (popupPosition.position) {
+      case 'top':
+        return 'after:absolute after:top-full after:left-1/2 after:transform after:-translate-x-1/2 after:border-8 after:border-t-white after:border-transparent after:border-b-0';
+      case 'bottom':
+        return 'before:absolute before:bottom-full before:left-1/2 before:transform before:-translate-x-1/2 before:border-8 before:border-b-white before:border-transparent before:border-t-0';
+      case 'left':
+        return 'after:absolute after:left-full after:top-1/2 after:transform after:-translate-y-1/2 after:border-8 after:border-l-white after:border-transparent after:border-r-0';
+      case 'right':
+        return 'before:absolute before:right-full before:top-1/2 before:transform before:-translate-y-1/2 before:border-8 before:border-r-white before:border-transparent before:border-l-0';
+      default:
+        return '';
+    }
+  };
+
   return (
     <>
       {/* Overlay backdrop */}
@@ -169,8 +264,14 @@ export const TutorialOverlay = () => {
         </div>
       )}
 
-      {/* Tutorial instruction card */}
-      <div className="fixed z-50 bottom-20 left-4 right-4 max-w-md mx-auto">
+      {/* Tutorial instruction card with dynamic positioning */}
+      <div 
+        className={`fixed z-50 max-w-md ${getArrowClasses()}`}
+        style={{
+          top: popupPosition.top,
+          left: popupPosition.left,
+        }}
+      >
         <Card className="shadow-2xl border-garage-purple">
           <CardContent className="p-4">
             <div className="flex justify-between items-start mb-3">
