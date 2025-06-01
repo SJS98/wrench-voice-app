@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useTutorial } from '@/contexts/TutorialContext';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { voiceSynthesis } from '@/utils/voiceSynthesis';
@@ -30,47 +31,84 @@ export const TutorialOverlay = () => {
     resumeTutorial,
     exitTutorial,
     toggleVoice,
+    handleElementClick,
   } = useTutorial();
 
+  const location = useLocation();
+  const navigate = useNavigate();
   const [highlightedElement, setHighlightedElement] = useState<Element | null>(null);
   const [elementPosition, setElementPosition] = useState({ top: 0, left: 0, width: 0, height: 0 });
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const currentStepData = steps[currentStep];
 
+  // Check if we need to navigate to the correct page for the current step
+  useEffect(() => {
+    if (isActive && currentStepData && currentStepData.page && location.pathname !== currentStepData.page) {
+      navigate(currentStepData.page);
+    }
+  }, [currentStep, isActive, currentStepData, location.pathname, navigate]);
+
   useEffect(() => {
     if (!isActive || !currentStepData) return;
 
-    // Find and highlight the target element
-    const targetElement = document.querySelector(currentStepData.targetSelector);
-    if (targetElement) {
-      setHighlightedElement(targetElement);
-      const rect = targetElement.getBoundingClientRect();
-      setElementPosition({
-        top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-        height: rect.height,
-      });
+    // Wait a bit for page to load if we just navigated
+    const timeout = setTimeout(() => {
+      const targetElement = document.querySelector(currentStepData.targetSelector);
+      if (targetElement) {
+        setHighlightedElement(targetElement);
+        const rect = targetElement.getBoundingClientRect();
+        setElementPosition({
+          top: rect.top + window.scrollY,
+          left: rect.left + window.scrollX,
+          width: rect.width,
+          height: rect.height,
+        });
 
-      // Scroll element into view
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      // Speak the instruction if voice is enabled
-      if (isVoiceEnabled && !isPaused) {
-        setIsSpeaking(true);
-        voiceSynthesis
-          .speak(currentStepData.voice[language], language)
-          .catch(console.error)
-          .finally(() => setIsSpeaking(false));
+        // Add click listener for auto-progression
+        if (currentStepData.autoProgress) {
+          const clickHandler = (event: Event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            handleElementClick(currentStepData.targetSelector);
+            
+            // Allow the original action after tutorial progression
+            setTimeout(() => {
+              if (currentStepData.navigationTarget) {
+                navigate(currentStepData.navigationTarget);
+              } else {
+                // Re-trigger the original click
+                const originalElement = event.target as HTMLElement;
+                if (originalElement && originalElement.click) {
+                  originalElement.click();
+                }
+              }
+            }, 100);
+          };
+          
+          targetElement.addEventListener('click', clickHandler, { once: true });
+        }
+
+        if (isVoiceEnabled && !isPaused) {
+          setIsSpeaking(true);
+          voiceSynthesis
+            .speak(currentStepData.voice[language], language)
+            .catch(console.error)
+            .finally(() => setIsSpeaking(false));
+        }
+      } else {
+        console.warn(`Tutorial: Element not found for selector: ${currentStepData.targetSelector}`);
       }
-    }
+    }, 500);
 
     return () => {
+      clearTimeout(timeout);
       voiceSynthesis.stop();
       setIsSpeaking(false);
     };
-  }, [currentStep, isActive, currentStepData, language, isVoiceEnabled, isPaused]);
+  }, [currentStep, isActive, currentStepData, language, isVoiceEnabled, isPaused, handleElementClick, navigate]);
 
   const handleNext = () => {
     voiceSynthesis.stop();
@@ -114,7 +152,7 @@ export const TutorialOverlay = () => {
   return (
     <>
       {/* Overlay backdrop */}
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 pointer-events-none" />
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-40 pointer-events-none" />
       
       {/* Spotlight on highlighted element */}
       {highlightedElement && (
@@ -168,6 +206,18 @@ export const TutorialOverlay = () => {
               </div>
             </div>
 
+            {/* Auto-progress indicator */}
+            {currentStepData.autoProgress && (
+              <div className="mb-3 p-2 bg-garage-purple/10 rounded-md">
+                <p className="text-xs text-garage-purple">
+                  {language === 'en' 
+                    ? '👆 Tap the highlighted element to continue' 
+                    : '👆 जारी रखने के लिए हाइलाइट किए गए तत्व पर टैप करें'
+                  }
+                </p>
+              </div>
+            )}
+
             {/* Controls */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -203,14 +253,18 @@ export const TutorialOverlay = () => {
                   size="sm"
                   onClick={handleSkip}
                 >
-                  Skip
+                  {language === 'en' ? 'Skip' : 'छोड़ें'}
                 </Button>
                 <Button
                   size="sm"
                   onClick={handleNext}
                   className="bg-garage-purple hover:bg-garage-purple/90"
+                  disabled={currentStepData.autoProgress}
                 >
-                  {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
+                  {currentStep === steps.length - 1 
+                    ? (language === 'en' ? 'Finish' : 'समाप्त') 
+                    : (language === 'en' ? 'Next' : 'अगला')
+                  }
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>

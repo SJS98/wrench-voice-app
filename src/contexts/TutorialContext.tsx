@@ -18,6 +18,9 @@ export interface TutorialStep {
   };
   position?: 'top' | 'bottom' | 'left' | 'right';
   page?: string;
+  action?: 'click' | 'navigate' | 'input' | 'select';
+  autoProgress?: boolean;
+  navigationTarget?: string;
 }
 
 interface TutorialContextType {
@@ -36,11 +39,12 @@ interface TutorialContextType {
   exitTutorial: () => void;
   toggleVoice: () => void;
   setLanguage: (lang: 'en' | 'hi') => void;
+  handleElementClick: (selector: string) => void;
 }
 
 const TutorialContext = createContext<TutorialContextType | undefined>(undefined);
 
-// Tutorial steps configuration
+// Enhanced tutorial steps for complete booking service flow
 const tutorialSteps: TutorialStep[] = [
   {
     id: 'welcome',
@@ -50,104 +54,176 @@ const tutorialSteps: TutorialStep[] = [
       hi: 'मिस्टर मैकेनिक में आपका स्वागत है'
     },
     description: {
-      en: 'Let me guide you through the app features',
-      hi: 'मैं आपको ऐप की सुविधाओं के बारे में बताता हूं'
+      en: 'Let me guide you through booking a service',
+      hi: 'मैं आपको सर्विस बुक करने की प्रक्रिया बताता हूं'
     },
     voice: {
-      en: 'Welcome to Mr. Mechanic! Let me guide you through all the amazing features of our app.',
-      hi: 'मिस्टर मैकेनिक में आपका स्वागत है! मैं आपको हमारे ऐप की सभी बेहतरीन सुविधाओं के बारे में बताता हूं।'
+      en: 'Welcome to Mr. Mechanic! Let me guide you through how to book a service for your vehicle.',
+      hi: 'मिस्टर मैकेनिक में आपका स्वागत है! मैं आपको अपनी गाड़ी की सर्विस बुक करने की प्रक्रिया बताता हूं।'
     },
-    page: '/'
+    page: '/',
+    autoProgress: false
   },
   {
-    id: 'book_service',
+    id: 'book_service_button',
     targetSelector: '[href="/services"]',
     title: {
       en: 'Book Service',
       hi: 'सर्विस बुक करें'
     },
     description: {
-      en: 'Tap here to book a service for your vehicle',
-      hi: 'अपनी गाड़ी की सर्विस बुक करने के लिए यहां टैप करें'
+      en: 'Tap here to start booking a service',
+      hi: 'सर्विस बुक करना शुरू करने के लिए यहां टैप करें'
     },
     voice: {
-      en: 'Tap on Book Service to schedule maintenance or repairs for your vehicle.',
-      hi: 'अपनी गाड़ी की मेंटेनेंस या रिपेयर बुक करने के लिए बुक सर्विस पर टैप करें।'
+      en: 'Tap on the Book Service button to start booking a service for your vehicle.',
+      hi: 'अपनी गाड़ी की सर्विस बुक करना शुरू करने के लिए बुक सर्विस बटन पर टैप करें।'
     },
     position: 'bottom',
-    page: '/'
+    page: '/',
+    action: 'click',
+    autoProgress: true,
+    navigationTarget: '/services'
   },
   {
-    id: 'spare_parts',
-    targetSelector: '[href="/spare-parts"]',
+    id: 'select_vehicle',
+    targetSelector: '#vehicle-select',
     title: {
-      en: 'Buy Spare Parts',
-      hi: 'स्पेयर पार्ट्स खरीदें'
+      en: 'Select Your Vehicle',
+      hi: 'अपना वाहन चुनें'
     },
     description: {
-      en: 'Shop for genuine spare parts',
-      hi: 'असली स्पेयर पार्ट्स खरीदें'
+      en: 'Choose the vehicle you want to service',
+      hi: 'जिस वाहन की सर्विस कराना चाहते हैं उसे चुनें'
     },
     voice: {
-      en: 'Browse and buy genuine spare parts for your vehicle from trusted sellers.',
-      hi: 'विश्वसनीय विक्रेताओं से अपनी गाड़ी के लिए असली स्पेयर पार्ट्स देखें और खरीदें।'
+      en: 'First, select your vehicle from the dropdown menu. This helps us show relevant services.',
+      hi: 'पहले, ड्रॉपडाउन मेनू से अपना वाहन चुनें। इससे हमें संबंधित सेवाएं दिखाने में मदद मिलती है।'
     },
     position: 'bottom',
-    page: '/'
+    page: '/services',
+    action: 'select',
+    autoProgress: false
   },
   {
-    id: 'sos',
-    targetSelector: '[href="/sos"]',
+    id: 'browse_services',
+    targetSelector: '.grid.grid-cols-5',
     title: {
-      en: 'Emergency SOS',
-      hi: 'इमरजेंसी एसओएस'
+      en: 'Browse Service Categories',
+      hi: 'सर्विस श्रेणियां देखें'
     },
     description: {
-      en: 'Get immediate help in emergency situations',
-      hi: 'आपातकालीन स्थितियों में तुरंत सहायता प्राप्त करें'
+      en: 'Explore different service categories',
+      hi: 'विभिन्न सर्विस श्रेणियों को देखें'
     },
     voice: {
-      en: 'Use Emergency SOS for immediate roadside assistance when you need urgent help.',
-      hi: 'जब आपको तुरंत सहायता की जरूरत हो तो रोडसाइड असिस्टेंस के लिए इमरजेंसी एसओएस का उपयोग करें।'
+      en: 'Browse through different service categories like Popular, Maintenance, Repair, Tires, and Specialized services.',
+      hi: 'लोकप्रिय, मेंटेनेंस, रिपेयर, टायर, और विशेष सेवाओं जैसी विभिन्न सर्विस श्रेणियों को देखें।'
     },
     position: 'bottom',
-    page: '/'
+    page: '/services',
+    action: 'click',
+    autoProgress: false
   },
   {
-    id: 'used_vehicles',
-    targetSelector: '[href="/used-vehicles"]',
+    id: 'select_service',
+    targetSelector: '[data-testid="service-card"]:first-child',
     title: {
-      en: 'Used Vehicles',
-      hi: 'पुराने वाहन'
+      en: 'Select a Service',
+      hi: 'एक सर्विस चुनें'
     },
     description: {
-      en: 'Browse certified used vehicles',
-      hi: 'प्रमाणित पुराने वाहन देखें'
+      en: 'Tap on any service card to select it',
+      hi: 'किसी भी सर्विस कार्ड पर टैप करके उसे चुनें'
     },
     voice: {
-      en: 'Find your perfect pre-owned vehicle from our collection of certified used cars and bikes.',
-      hi: 'प्रमाणित पुराने कारों और बाइकों के हमारे संग्रह से अपना परफेक्ट पुराना वाहन खोजें।'
+      en: 'Tap on a service card to select it. You can see the price and duration for each service.',
+      hi: 'सर्विस कार्ड पर टैप करके उसे चुनें। आप हर सर्विस की कीमत और समय देख सकते हैं।'
     },
     position: 'top',
-    page: '/'
+    page: '/services',
+    action: 'click',
+    autoProgress: false
   },
   {
-    id: 'navigation',
+    id: 'continue_to_garage',
+    targetSelector: 'a[href*="/search"]',
+    title: {
+      en: 'Continue to Select Garage',
+      hi: 'गैरेज चुनने के लिए आगे बढ़ें'
+    },
+    description: {
+      en: 'Proceed to find nearby garages',
+      hi: 'नजदीकी गैरेज खोजने के लिए आगे बढ़ें'
+    },
+    voice: {
+      en: 'After selecting services, tap Continue to Select Garage to find nearby service centers.',
+      hi: 'सेवाएं चुनने के बाद, नजदीकी सर्विस सेंटर खोजने के लिए गैरेज चुनने के लिए आगे बढ़ें पर टैप करें।'
+    },
+    position: 'top',
+    page: '/services',
+    action: 'click',
+    autoProgress: true,
+    navigationTarget: '/search'
+  },
+  {
+    id: 'select_garage',
+    targetSelector: '[data-testid="garage-card"]:first-child',
+    title: {
+      en: 'Choose a Garage',
+      hi: 'एक गैरेज चुनें'
+    },
+    description: {
+      en: 'Select a garage from the list',
+      hi: 'सूची से एक गैरेज चुनें'
+    },
+    voice: {
+      en: 'Choose a garage from the list. You can see ratings, distance, and services offered.',
+      hi: 'सूची से एक गैरेज चुनें। आप रेटिंग, दूरी, और दी जाने वाली सेवाएं देख सकते हैं।'
+    },
+    position: 'bottom',
+    page: '/search',
+    action: 'click',
+    autoProgress: false
+  },
+  {
+    id: 'book_now',
+    targetSelector: 'button:contains("Book Now")',
+    title: {
+      en: 'Book Your Service',
+      hi: 'अपनी सर्विस बुक करें'
+    },
+    description: {
+      en: 'Tap Book Now to proceed with booking',
+      hi: 'बुकिंग के साथ आगे बढ़ने के लिए बुक नाउ पर टैप करें'
+    },
+    voice: {
+      en: 'Tap Book Now to proceed with your service booking and complete the process.',
+      hi: 'अपनी सर्विस बुकिंग के साथ आगे बढ़ने और प्रक्रिया पूरी करने के लिए बुक नाउ पर टैप करें।'
+    },
+    position: 'top',
+    page: '/search',
+    action: 'click',
+    autoProgress: true
+  },
+  {
+    id: 'tutorial_complete',
     targetSelector: '.fixed.bottom-0',
     title: {
-      en: 'Bottom Navigation',
-      hi: 'नीचे नेवीगेशन'
+      en: 'Tutorial Complete!',
+      hi: 'ट्यूटोरियल पूरा!'
     },
     description: {
-      en: 'Use the bottom navigation to access different sections',
-      hi: 'विभिन्न सेक्शन तक पहुंचने के लिए नीचे के नेवीगेशन का उपयोग करें'
+      en: 'You have learned how to book a service',
+      hi: 'आपने सर्विस बुक करना सीख लिया है'
     },
     voice: {
-      en: 'Use the bottom navigation bar to quickly access Home, Services, Emergency, Parts, and your Profile.',
-      hi: 'होम, सर्विसेज, इमरजेंसी, पार्ट्स और अपनी प्रोफाइल तक जल्दी पहुंचने के लिए नीचे के नेवीगेशन बार का उपयोग करें।'
+      en: 'Congratulations! You have successfully learned how to book a service. You can now use the app to book services for your vehicle.',
+      hi: 'बधाई हो! आपने सफलतापूर्वक सर्विस बुक करना सीख लिया है। अब आप अपनी गाड़ी की सेवाओं को बुक करने के लिए ऐप का उपयोग कर सकते हैं।'
     },
     position: 'top',
-    page: '/'
+    page: '/search',
+    autoProgress: false
   }
 ];
 
@@ -195,12 +271,21 @@ export const TutorialProvider = ({ children }: { children: ReactNode }) => {
     setIsActive(false);
     setCurrentStep(0);
     setIsPaused(false);
-    // Save completion status to localStorage
     localStorage.setItem('tutorialCompleted', 'true');
   };
 
   const toggleVoice = () => {
     setIsVoiceEnabled(!isVoiceEnabled);
+  };
+
+  const handleElementClick = (selector: string) => {
+    const currentStepData = tutorialSteps[currentStep];
+    if (currentStepData && currentStepData.targetSelector === selector && currentStepData.autoProgress) {
+      // Small delay to allow the action to complete
+      setTimeout(() => {
+        nextStep();
+      }, 500);
+    }
   };
 
   return (
@@ -221,6 +306,7 @@ export const TutorialProvider = ({ children }: { children: ReactNode }) => {
         exitTutorial,
         toggleVoice,
         setLanguage,
+        handleElementClick,
       }}
     >
       {children}

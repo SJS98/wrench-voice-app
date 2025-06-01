@@ -1,7 +1,8 @@
 
-import { cn } from '@/lib/utils';
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Check } from 'lucide-react';
 import { VehicleType } from '@/types/vehicles';
-import VehicleIcon from '@/components/vehicles/VehicleIcon';
 
 export interface Service {
   id: string;
@@ -15,88 +16,62 @@ export interface Service {
 
 interface ServiceCardProps {
   service: Service;
-  selected?: boolean;
-  onClick?: () => void;
+  selected: boolean;
+  onClick: () => void;
   selectedVehicleType?: VehicleType;
 }
 
-const ServiceCard = ({ service, selected = false, onClick, selectedVehicleType }: ServiceCardProps) => {
-  // If compatibleVehicles is not defined, assume service is compatible with all vehicles
-  const isCompatible = !service.compatibleVehicles || !selectedVehicleType || 
-    service.compatibleVehicles.includes(selectedVehicleType);
-  
-  // Show price adjustments based on vehicle type
-  const getPriceForVehicleType = (basePrice: number, vehicleType?: VehicleType) => {
-    if (!vehicleType) return basePrice;
-    
-    // Price multipliers based on vehicle type
-    const multipliers: Record<VehicleType, number> = {
-      'car': 1,
-      'bike': 0.6,
-      'truck': 2.5,
-      'bus': 3,
-      'auto-rickshaw': 0.8,
-      'bicycle': 0.3
-    };
-    
-    return Math.round(basePrice * multipliers[vehicleType]);
+const ServiceCard = ({ service, selected, onClick, selectedVehicleType }: ServiceCardProps) => {
+  // Apply price multiplier based on vehicle type
+  const priceMultipliers: Record<VehicleType, number> = {
+    'car': 1,
+    'bike': 0.6,
+    'truck': 2.5,
+    'bus': 3,
+    'auto-rickshaw': 0.8,
+    'bicycle': 0.3
   };
   
-  const price = selectedVehicleType 
-    ? getPriceForVehicleType(service.price, selectedVehicleType) 
-    : service.price;
+  const multiplier = selectedVehicleType ? priceMultipliers[selectedVehicleType] : 1;
+  const adjustedPrice = Math.round(service.price * multiplier);
 
   return (
-    <div 
-      className={cn(
-        "border rounded-lg p-4 transition-all",
-        selected 
-          ? "border-garage-purple bg-garage-purple/5 shadow-sm" 
-          : "border-gray-200 hover:border-garage-blue/50",
-        !isCompatible 
-          ? "opacity-50 cursor-not-allowed" 
-          : "cursor-pointer hover:bg-gray-50"
-      )}
-      onClick={isCompatible ? onClick : undefined}
+    <Card 
+      className={`cursor-pointer transition-all hover:shadow-md ${
+        selected ? 'ring-2 ring-garage-purple bg-garage-purple/5' : ''
+      }`}
+      onClick={onClick}
+      data-testid="service-card"
     >
-      <div className="flex items-center gap-3">
-        <div className="bg-gray-100 p-3 rounded-full">
-          <img src={service.iconUrl} alt={service.name} className="w-6 h-6" />
-        </div>
-        <div className="flex-1">
-          <div className="flex items-center">
-            <h3 className="font-medium">{service.name}</h3>
-            {service.compatibleVehicles && (
-              <div className="ml-2 flex space-x-1">
-                {service.compatibleVehicles.map(type => (
-                  <VehicleIcon 
-                    key={type} 
-                    type={type} 
-                    className={`h-3 w-3 ${selectedVehicleType === type ? 'text-garage-purple' : 'text-gray-400'}`} 
-                  />
-                ))}
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">🔧</span>
               </div>
-            )}
+              <div>
+                <h3 className="font-semibold">{service.name}</h3>
+                <p className="text-sm text-muted-foreground">{service.description}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <span className="font-bold text-garage-purple">₹{adjustedPrice.toLocaleString()}</span>
+                <span className="text-sm text-muted-foreground">{service.duration}</span>
+              </div>
+              
+              {selected && (
+                <div className="w-6 h-6 bg-garage-purple rounded-full flex items-center justify-center">
+                  <Check className="w-4 h-4 text-white" />
+                </div>
+              )}
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground">{service.description}</p>
         </div>
-        <div className="flex flex-col items-end">
-          <span className="font-semibold">₹{price}</span>
-          <span className="text-xs text-muted-foreground">{service.duration}</span>
-        </div>
-      </div>
-      
-      {selected && (
-        <div className="mt-3 pt-3 border-t border-dashed border-garage-purple/30">
-          <span className="text-sm text-garage-purple flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-              <path d="M20 6 9 17l-5-5" />
-            </svg>
-            Selected
-          </span>
-        </div>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
