@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Star, MapPin, Clock, Wrench } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { VehicleType } from '@/types/vehicles';
 
 export interface Garage {
   id: string;
@@ -18,6 +19,12 @@ export interface Garage {
   isOpen?: boolean;
   specializations?: string[];
   estimatedTime?: string;
+  // Additional properties for mock data compatibility
+  reviews?: number;
+  openTime?: string;
+  closeTime?: string;
+  services?: string[];
+  supportedVehicles?: VehicleType[];
 }
 
 interface GarageCardProps {
@@ -45,6 +52,9 @@ const GarageCard = ({ garage, onBookNow, vehicleId, vehicleType }: GarageCardPro
       navigate(bookingUrl);
     }
   };
+
+  // Use reviews or reviewCount for compatibility
+  const displayReviewCount = garage.reviewCount || garage.reviews || 0;
 
   return (
     <Card 
@@ -78,7 +88,7 @@ const GarageCard = ({ garage, onBookNow, vehicleId, vehicleType }: GarageCardPro
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
             <span className="text-sm font-medium">{garage.rating}</span>
-            <span className="text-xs text-muted-foreground">({garage.reviewCount})</span>
+            <span className="text-xs text-muted-foreground">({displayReviewCount})</span>
           </div>
         </div>
         

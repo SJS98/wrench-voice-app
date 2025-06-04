@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
@@ -18,7 +19,7 @@ const mockGarages: Garage[] = [
     address: "MG Road, Bangalore",
     distance: "1.2 km",
     rating: 4.7,
-    reviews: 124,
+    reviewCount: 124,
     imageUrl:
       "https://images.unsplash.com/photo-1617886903355-df116483a857?q=80&w=600&auto=format&fit=crop",
     isOpen: true,
@@ -34,7 +35,7 @@ const mockGarages: Garage[] = [
     address: "HSR Layout, Bangalore",
     distance: "2.5 km",
     rating: 4.5,
-    reviews: 86,
+    reviewCount: 86,
     imageUrl:
       "https://images.unsplash.com/photo-1601101108231-11f5f9a282aa?q=80&w=600&auto=format&fit=crop",
     isOpen: true,
@@ -50,7 +51,7 @@ const mockGarages: Garage[] = [
     address: "Koramangala, Bangalore",
     distance: "3.7 km",
     rating: 4.2,
-    reviews: 152,
+    reviewCount: 152,
     imageUrl:
       "https://images.unsplash.com/photo-1486006920555-c77dcf18193c?q=80&w=600&auto=format&fit=crop",
     isOpen: false,
@@ -66,7 +67,7 @@ const mockGarages: Garage[] = [
     address: "Indiranagar, Bangalore",
     distance: "4.1 km",
     rating: 4.8,
-    reviews: 210,
+    reviewCount: 210,
     imageUrl:
       "https://images.unsplash.com/photo-1613214177885-74ca3500b8a3?q=80&w=600&auto=format&fit=crop",
     isOpen: true,
@@ -82,7 +83,7 @@ const mockGarages: Garage[] = [
     address: "Whitefield, Bangalore",
     distance: "7.3 km",
     rating: 4.0,
-    reviews: 78,
+    reviewCount: 78,
     imageUrl:
       "https://images.unsplash.com/photo-1566233590969-d77010fc90f8?q=80&w=600&auto=format&fit=crop",
     isOpen: true,
@@ -98,7 +99,7 @@ const mockGarages: Garage[] = [
     address: "JP Nagar, Bangalore",
     distance: "5.2 km",
     rating: 4.9,
-    reviews: 45,
+    reviewCount: 45,
     imageUrl:
       "https://images.unsplash.com/photo-1596495577886-d920f1fb7238?q=80&w=600&auto=format&fit=crop",
     isOpen: true,
@@ -114,7 +115,7 @@ const mockGarages: Garage[] = [
     address: "Electronic City, Bangalore",
     distance: "12.1 km",
     rating: 4.6,
-    reviews: 63,
+    reviewCount: 63,
     imageUrl:
       "https://images.unsplash.com/photo-1602516091331-27005778da9c?q=80&w=600&auto=format&fit=crop",
     isOpen: true,
@@ -130,7 +131,7 @@ const mockGarages: Garage[] = [
     address: "Yelahanka, Bangalore",
     distance: "9.8 km",
     rating: 4.3,
-    reviews: 38,
+    reviewCount: 38,
     imageUrl:
       "https://images.unsplash.com/photo-1548013558-9592ef309506?q=80&w=600&auto=format&fit=crop",
     isOpen: true,
@@ -235,8 +236,6 @@ const SearchPage = () => {
           </div>
         </form>
 
-        {/* SearchTemp Code*/}
-
         {/* Service Type Filter - Always show full text in chip, no expand */}
         <div className="mb-2 overflow-x-auto scrollbar-hide">
           <div className="flex gap-1">
@@ -319,7 +318,6 @@ const SearchPage = () => {
                 <GarageCard
                   key={garage.id}
                   garage={garage}
-                  selectedVehicleType={selectedVehicleType}
                 />
               ))
             ) : (

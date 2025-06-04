@@ -21,7 +21,7 @@ const mockGarages: Garage[] = [
     address: 'MG Road, Bangalore',
     distance: '1.2 km',
     rating: 4.7,
-    reviews: 124,
+    reviewCount: 124,
     imageUrl: 'https://images.unsplash.com/photo-1617886903355-df116483a857?q=80&w=600&auto=format&fit=crop',
     isOpen: true,
     openTime: '8:00 AM',
@@ -36,7 +36,7 @@ const mockGarages: Garage[] = [
     address: 'HSR Layout, Bangalore',
     distance: '2.5 km',
     rating: 4.5,
-    reviews: 86,
+    reviewCount: 86,
     imageUrl: 'https://images.unsplash.com/photo-1601101108231-11f5f9a282aa?q=80&w=600&auto=format&fit=crop',
     isOpen: true,
     openTime: '9:00 AM',
@@ -51,7 +51,7 @@ const mockGarages: Garage[] = [
     address: 'Koramangala, Bangalore',
     distance: '3.7 km',
     rating: 4.2,
-    reviews: 152,
+    reviewCount: 152,
     imageUrl: 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?q=80&w=600&auto=format&fit=crop',
     isOpen: false,
     openTime: '9:00 AM',
@@ -125,10 +125,7 @@ const GarageSearch = ({ vehicleType, onGarageSelect }: GarageSearchProps) => {
               We've found the best garage for you based on ratings and service quality
             </p>
             <div className="mb-4">
-              <GarageCard 
-                garage={bestGarage}
-                selectedVehicleType={vehicleType || undefined}
-              />
+              <GarageCard garage={bestGarage} />
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button 
@@ -192,10 +189,7 @@ const GarageSearch = ({ vehicleType, onGarageSelect }: GarageSearchProps) => {
               {filteredGarages.length > 0 ? (
                 filteredGarages.map(garage => (
                   <div key={garage.id} onClick={() => onGarageSelect(garage)}>
-                    <GarageCard 
-                      garage={garage}
-                      selectedVehicleType={vehicleType || undefined}
-                    />
+                    <GarageCard garage={garage} />
                   </div>
                 ))
               ) : (
