@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -76,16 +77,16 @@ const GarageFilters: React.FC<GarageFiltersProps> = ({
     const updatedFilters = { ...filters };
 
     if (category === "vehicleType" || category === "serviceType") {
-      const currentArray = (updatedFilters[category] as any[]) || [];
+      const currentArray = (updatedFilters[category] as string[]) || [];
       if (currentArray.includes(value)) {
-        updatedFilters[category] = currentArray.filter(
-          (item) => item !== value
-        );
-        if ((updatedFilters[category] as any[]).length === 0) {
+        const filtered = currentArray.filter((item) => item !== value);
+        if (filtered.length === 0) {
           delete updatedFilters[category];
+        } else {
+          updatedFilters[category] = filtered as any;
         }
       } else {
-        updatedFilters[category] = [...currentArray, value];
+        updatedFilters[category] = [...currentArray, value] as any;
       }
     } else if (category === "distance") {
       updatedFilters.distance = value;
@@ -96,7 +97,7 @@ const GarageFilters: React.FC<GarageFiltersProps> = ({
     } else if (category === "isOpenNow") {
       updatedFilters.isOpenNow = value;
     } else {
-      updatedFilters[category] = value;
+      (updatedFilters as any)[category] = value;
     }
 
     setFilters(updatedFilters);

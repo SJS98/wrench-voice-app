@@ -181,7 +181,12 @@ const GarageDetailsPage = () => {
               </div>
               
               {mockServices.slice(0, 3).map((service) => (
-                <ServiceCard key={service.id} service={service} />
+                <ServiceCard 
+                  key={service.id} 
+                  service={service} 
+                  selected={false}
+                  onClick={() => {}}
+                />
               ))}
               
               <Link to={`/book-service/${garage.id}`}>

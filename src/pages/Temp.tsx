@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import VehicleIcon from '@/components/vehicles/VehicleIcon';
 import VehicleFilters from '@/components/usedVehicles/VehicleFilters';
 
-type VehicleType = 'car' | 'motorcycle' | 'truck' | 'bus' | 'auto-rickshaw';
+type VehicleType = 'car' | 'bike' | 'truck' | 'bus' | 'auto-rickshaw';
 
 const Temp = () => {
   const [selectedVehicleType, setSelectedVehicleType] = React.useState<VehicleType | undefined>();

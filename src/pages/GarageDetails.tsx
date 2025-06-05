@@ -1,4 +1,3 @@
-
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { 
@@ -20,7 +19,6 @@ import { VehicleType } from '@/types/vehicles';
 import VehicleIcon from '@/components/vehicles/VehicleIcon';
 import GarageStatus from '@/components/garage/GarageStatus';
 
-// Mock garage data
 const mockGarageDetails = {
   id: '1',
   name: 'Auto Care Center',
@@ -201,7 +199,12 @@ const GarageDetailsPage = () => {
               </div>
               
               {mockServices.slice(0, 3).map((service) => (
-                <ServiceCard key={service.id} service={service} />
+                <ServiceCard 
+                  key={service.id} 
+                  service={service} 
+                  selected={false}
+                  onClick={() => {}}
+                />
               ))}
               
               <Link to={`/book-service/${garage.id}`}>
@@ -210,6 +213,8 @@ const GarageDetailsPage = () => {
                 </Button>
               </Link>
             </TabsContent>
+            
+            
             
             <TabsContent value="reviews" className="mt-4">
               <div className="flex justify-between items-center mb-4">
