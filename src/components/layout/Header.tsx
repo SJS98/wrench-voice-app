@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { Bell, Search, Settings } from 'lucide-react';
+import { Bell, Search, Settings, ArrowLeft, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
@@ -29,24 +29,38 @@ const Header = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background">
-      <div className="container flex h-16 items-center justify-between py-4">
-        <div className="flex items-center">
+    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-md border-b border-border">
+      <div className="container flex h-16 items-center justify-between px-4">
+        <div className="flex items-center gap-3">
           {showBackButton && (
-            <Button variant="ghost" size="icon" onClick={handleBack} className="mr-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
-                <path d="m15 18-6-6 6-6" />
-              </svg>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleBack} 
+              className="rounded-xl hover:bg-secondary/60 transition-all duration-300"
+            >
+              <ArrowLeft className="h-5 w-5" />
               <span className="sr-only">Back</span>
             </Button>
           )}
-          <h1 className="text-xl font-bold text-garage-dark">{title}</h1>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">MG</span>
+            </div>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              {title}
+            </h1>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           {showSearch && (
             <Link to="/search">
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-xl hover:bg-secondary/60 transition-all duration-300"
+              >
                 <Search className="h-5 w-5" />
                 <span className="sr-only">Search</span>
               </Button>
@@ -54,16 +68,24 @@ const Header = ({
           )}
           {showNotification && (
             <Link to="/notifications">
-              <Button variant="ghost" size="icon" className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative rounded-xl hover:bg-secondary/60 transition-all duration-300"
+              >
                 <Bell className="h-5 w-5" />
                 <span className="sr-only">Notifications</span>
-                <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-garage-purple"></span>
+                <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-primary animate-pulse"></span>
               </Button>
             </Link>
           )}
           {showSettings && (
             <Link to="/settings">
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-xl hover:bg-secondary/60 transition-all duration-300"
+              >
                 <Settings className="h-5 w-5" />
                 <span className="sr-only">Settings</span>
               </Button>

@@ -2,13 +2,13 @@
 import { Link, useLocation } from 'react-router-dom';
 import {
   Home,
-  Search,
+  Settings,
   Wrench,
-  AlertTriangle,
+  Shield,
   User,
   Car,
-  ShoppingBag,
-  Clipboard
+  ShoppingCart,
+  Calendar
 } from 'lucide-react';
 
 const MobileNavigation = () => {
@@ -22,56 +22,56 @@ const MobileNavigation = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 border-t bg-white z-10">
-      <div className="grid grid-cols-5 gap-1">
+    <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t border-border z-50">
+      <div className="grid grid-cols-5 gap-1 px-2 py-1">
         <Link
           to="/"
-          className={`flex flex-col items-center py-2 ${
-            isActive('/') ? 'text-garage-purple' : 'text-gray-500'
+          className={`nav-item ${
+            isActive('/') ? 'nav-item-active' : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <Home className="h-5 w-5" />
-          <span className="text-xs mt-1">Home</span>
+          <span className="text-xs mt-1 font-medium">Home</span>
         </Link>
 
         <Link
           to="/services"
-          className={`flex flex-col items-center py-2 ${
-            isActive('/services') ? 'text-garage-purple' : 'text-gray-500'
+          className={`nav-item ${
+            isActive('/services') ? 'nav-item-active' : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <Wrench className="h-5 w-5" />
-          <span className="text-xs mt-1">Services</span>
+          <span className="text-xs mt-1 font-medium">Services</span>
         </Link>
 
         <Link
           to="/sos"
-          className={`flex flex-col items-center py-2 ${
-            isActive('/sos') ? 'text-garage-purple' : 'text-gray-500'
+          className={`nav-item ${
+            isActive('/sos') ? 'nav-item-active' : 'text-muted-foreground hover:text-foreground'
           }`}
         >
-          <AlertTriangle className="h-5 w-5" />
-          <span className="text-xs mt-1">SOS</span>
+          <Shield className="h-5 w-5" />
+          <span className="text-xs mt-1 font-medium">SOS</span>
         </Link>
 
         <Link
           to="/spare-parts"
-          className={`flex flex-col items-center py-2 ${
-            isActive('/spare-parts') ? 'text-garage-purple' : 'text-gray-500'
+          className={`nav-item ${
+            isActive('/spare-parts') ? 'nav-item-active' : 'text-muted-foreground hover:text-foreground'
           }`}
         >
-          <ShoppingBag className="h-5 w-5" />
-          <span className="text-xs mt-1">Parts</span>
+          <ShoppingCart className="h-5 w-5" />
+          <span className="text-xs mt-1 font-medium">Parts</span>
         </Link>
 
         <Link
           to="/profile"
-          className={`flex flex-col items-center py-2 ${
-            isActive('/profile') ? 'text-garage-purple' : 'text-gray-500'
+          className={`nav-item ${
+            isActive('/profile') ? 'nav-item-active' : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <User className="h-5 w-5" />
-          <span className="text-xs mt-1">Profile</span>
+          <span className="text-xs mt-1 font-medium">Profile</span>
         </Link>
       </div>
     </div>

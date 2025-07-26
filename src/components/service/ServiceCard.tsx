@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Check } from 'lucide-react';
+import { Check, Wrench, Clock } from 'lucide-react';
 import { VehicleType } from '@/types/vehicles';
 
 export interface Service {
@@ -37,34 +37,37 @@ const ServiceCard = ({ service, selected, onClick, selectedVehicleType }: Servic
 
   return (
     <Card 
-      className={`cursor-pointer transition-all hover:shadow-md ${
-        selected ? 'ring-2 ring-garage-purple bg-garage-purple/5' : ''
+      className={`service-card cursor-pointer ${
+        selected ? 'ring-2 ring-primary border-primary/30 bg-primary/5' : 'hover:border-primary/20'
       }`}
       onClick={onClick}
       data-testid="service-card"
     >
-      <CardContent className="p-4">
+      <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                <span className="text-2xl">🔧</span>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center">
+                <Wrench className="h-7 w-7 text-white" />
               </div>
-              <div>
-                <h3 className="font-semibold">{service.name}</h3>
-                <p className="text-sm text-muted-foreground">{service.description}</p>
+              <div className="flex-1">
+                <h3 className="font-bold text-lg">{service.name}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{service.description}</p>
               </div>
             </div>
             
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <span className="font-bold text-garage-purple">₹{adjustedPrice.toLocaleString()}</span>
-                <span className="text-sm text-muted-foreground">{service.duration}</span>
+                <span className="font-bold text-xl text-primary">₹{adjustedPrice.toLocaleString()}</span>
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Clock className="h-4 w-4" />
+                  <span>{service.duration}</span>
+                </div>
               </div>
               
               {selected && (
-                <div className="w-6 h-6 bg-garage-purple rounded-full flex items-center justify-center">
-                  <Check className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center">
+                  <Check className="w-5 h-5 text-white" />
                 </div>
               )}
             </div>
