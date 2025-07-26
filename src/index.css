@@ -5,94 +5,88 @@
 
 @layer base {
   :root {
-    --background: 251 100% 99%;
-    --foreground: 226 28% 9%;
+    --background: 255 255 255;
+    --foreground: 15 23 42;
 
-    --card: 0 0% 100%;
-    --card-foreground: 226 28% 9%;
+    --card: 255 255 255;
+    --card-foreground: 15 23 42;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 226 28% 9%;
+    --popover: 255 255 255;
+    --popover-foreground: 15 23 42;
 
-    --primary: 262 90% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 59 130 246;
+    --primary-foreground: 255 255 255;
 
-    --secondary: 251 91% 95%;
-    --secondary-foreground: 226 28% 9%;
+    --secondary: 241 245 249;
+    --secondary-foreground: 15 23 42;
 
-    --muted: 246 42% 95%;
-    --muted-foreground: 226 14% 51%;
+    --muted: 248 250 252;
+    --muted-foreground: 100 116 139;
 
-    --accent: 207 89% 86%;
-    --accent-foreground: 226 28% 9%;
+    --accent: 34 197 94;
+    --accent-foreground: 255 255 255;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
 
-    --border: 246 26% 91%;
-    --input: 246 26% 91%;
-    --ring: 262 90% 50%;
+    --border: 226 232 240;
+    --input: 226 232 240;
+    --ring: 59 130 246;
 
-    --radius: 0.75rem;
+    --radius: 12px;
 
-    /* Professional gradient backgrounds */
-    --gradient-primary: linear-gradient(135deg, hsl(262 90% 50%), hsl(242 85% 60%));
-    --gradient-secondary: linear-gradient(135deg, hsl(207 89% 86%), hsl(220 70% 90%));
-    --gradient-accent: linear-gradient(135deg, hsl(280 100% 70%), hsl(262 90% 50%));
+    /* Clean professional colors */
+    --blue: 59 130 246;
+    --green: 34 197 94;
+    --orange: 251 146 60;
+    --red: 239 68 68;
+    --purple: 147 51 234;
+    --gray: 100 116 139;
     
-    /* Professional shadows */
-    --shadow-soft: 0 2px 8px -2px hsl(262 90% 50% / 0.1);
-    --shadow-medium: 0 4px 16px -4px hsl(262 90% 50% / 0.15);
-    --shadow-strong: 0 8px 32px -8px hsl(262 90% 50% / 0.2);
+    /* Professional shadows - subtle */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
-    --sidebar-background: 251 100% 99%;
-    --sidebar-foreground: 226 28% 9%;
-    --sidebar-primary: 262 90% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 251 91% 95%;
-    --sidebar-accent-foreground: 226 28% 9%;
-    --sidebar-border: 246 26% 91%;
-    --sidebar-ring: 262 90% 50%;
+    --sidebar-background: 255 255 255;
+    --sidebar-foreground: 15 23 42;
+    --sidebar-primary: 59 130 246;
+    --sidebar-primary-foreground: 255 255 255;
+    --sidebar-accent: 241 245 249;
+    --sidebar-accent-foreground: 15 23 42;
+    --sidebar-border: 226 232 240;
+    --sidebar-ring: 59 130 246;
   }
 
   .dark {
-    --background: 226 28% 7%;
-    --foreground: 251 100% 99%;
+    --background: 30 41 59;
+    --foreground: 248 250 252;
 
-    --card: 226 20% 10%;
-    --card-foreground: 251 100% 99%;
+    --card: 51 65 85;
+    --card-foreground: 248 250 252;
 
-    --popover: 226 20% 10%;
-    --popover-foreground: 251 100% 99%;
+    --popover: 51 65 85;
+    --popover-foreground: 248 250 252;
 
-    --primary: 262 90% 60%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 96 165 250;
+    --primary-foreground: 15 23 42;
 
-    --secondary: 226 20% 14%;
-    --secondary-foreground: 251 100% 99%;
+    --secondary: 71 85 105;
+    --secondary-foreground: 248 250 252;
 
-    --muted: 226 20% 14%;
-    --muted-foreground: 226 14% 65%;
+    --muted: 71 85 105;
+    --muted-foreground: 156 163 175;
 
-    --accent: 207 89% 70%;
-    --accent-foreground: 226 28% 7%;
+    --accent: 74 222 128;
+    --accent-foreground: 15 23 42;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 248 113 113;
+    --destructive-foreground: 15 23 42;
 
-    --border: 226 20% 18%;
-    --input: 226 20% 18%;
-    --ring: 262 90% 60%;
-
-    /* Dark mode gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(262 90% 60%), hsl(242 85% 70%));
-    --gradient-secondary: linear-gradient(135deg, hsl(226 20% 14%), hsl(226 20% 18%));
-    --gradient-accent: linear-gradient(135deg, hsl(280 100% 70%), hsl(262 90% 60%));
-    
-    /* Dark mode shadows */
-    --shadow-soft: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
-    --shadow-medium: 0 4px 16px -4px hsl(0 0% 0% / 0.4);
-    --shadow-strong: 0 8px 32px -8px hsl(0 0% 0% / 0.5);
+    --border: 71 85 105;
+    --input: 71 85 105;
+    --ring: 96 165 250;
   }
 }
 
@@ -107,109 +101,148 @@
   }
 }
 
-/* Professional MrGarageWala Design System */
+/* Clean, Accessible Design System for Everyone */
 @layer components {
-  /* Card Components */
+  /* Card Components - Clean and Simple */
   .garage-card {
-    @apply relative flex flex-col overflow-hidden rounded-2xl bg-card border border-border backdrop-blur-sm transition-all duration-300 hover:shadow-[var(--shadow-medium)] hover:-translate-y-1 hover:border-primary/20;
+    @apply bg-white border border-gray-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-200;
   }
 
   .service-card {
-    @apply bg-gradient-to-br from-background to-secondary/30 rounded-xl border border-border/50 p-6 transition-all duration-300 hover:shadow-[var(--shadow-soft)] hover:border-primary/30;
+    @apply bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-200;
   }
 
   .feature-card {
-    @apply bg-card rounded-2xl border border-border p-6 shadow-[var(--shadow-soft)] transition-all duration-300 hover:shadow-[var(--shadow-medium)] hover:border-primary/20;
+    @apply bg-white border border-gray-200 rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-all duration-200;
   }
 
-  /* Button Variants */
+  /* Simple, Large Buttons for Easy Access */
   .btn-primary {
-    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-medium)] hover:-translate-y-0.5;
+    @apply bg-blue-500 hover:bg-blue-600 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors duration-200 shadow-sm;
   }
 
   .btn-secondary {
-    @apply bg-secondary hover:bg-secondary/80 text-secondary-foreground font-medium px-6 py-3 rounded-xl transition-all duration-300 border border-border hover:border-primary/30;
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold px-8 py-4 rounded-2xl text-lg transition-colors duration-200 border-2 border-gray-200;
   }
 
-  .btn-accent {
-    @apply bg-gradient-to-r from-accent to-primary text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-medium)] hover:-translate-y-0.5;
+  .btn-success {
+    @apply bg-green-500 hover:bg-green-600 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors duration-200 shadow-sm;
   }
 
-  .btn-outline {
-    @apply border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-medium px-6 py-3 rounded-xl transition-all duration-300;
+  .btn-warning {
+    @apply bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors duration-200 shadow-sm;
   }
 
-  /* Input Fields */
-  .input-modern {
-    @apply flex h-12 w-full rounded-xl border border-border bg-background/50 backdrop-blur-sm px-4 py-3 text-sm transition-all duration-300 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary/50 focus-visible:bg-background;
+  .btn-danger {
+    @apply bg-red-500 hover:bg-red-600 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors duration-200 shadow-sm;
   }
 
-  .search-input {
-    @apply input-modern pl-12 bg-secondary/50 border-border/50 focus-visible:bg-background;
+  /* Large, Easy-to-Read Input Fields */
+  .input-large {
+    @apply w-full h-14 px-4 text-lg rounded-2xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none transition-colors duration-200 bg-white;
   }
 
-  /* Navigation */
+  /* Simple Navigation - Visual First */
   .nav-item {
-    @apply flex flex-col items-center py-3 px-2 rounded-xl transition-all duration-300 hover:bg-secondary/60;
+    @apply flex flex-col items-center p-4 rounded-2xl transition-colors duration-200 hover:bg-gray-100;
   }
 
   .nav-item-active {
-    @apply nav-item bg-primary/10 text-primary;
+    @apply nav-item bg-blue-50 text-blue-600 border-2 border-blue-200;
   }
 
-  /* Layout */
-  .page-container {
-    @apply container mx-auto px-4 py-6 max-w-7xl min-h-screen;
+  /* Large Icon Containers for Easy Recognition */
+  .icon-container {
+    @apply w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-2xl;
   }
 
-  .section-header {
-    @apply flex items-center justify-between mb-6 p-4 bg-gradient-to-r from-secondary/50 to-accent/20 rounded-2xl border border-border/50;
+  .icon-container-blue {
+    @apply icon-container bg-blue-500;
   }
 
-  .section-title {
-    @apply text-2xl font-bold text-foreground;
+  .icon-container-green {
+    @apply icon-container bg-green-500;
   }
 
-  .section-subtitle {
-    @apply text-sm text-muted-foreground mt-1;
+  .icon-container-orange {
+    @apply icon-container bg-orange-500;
   }
 
-  /* Status Indicators */
+  .icon-container-red {
+    @apply icon-container bg-red-500;
+  }
+
+  .icon-container-purple {
+    @apply icon-container bg-purple-500;
+  }
+
+  .icon-container-gray {
+    @apply icon-container bg-gray-500;
+  }
+
+  /* Large Text for Better Readability */
+  .title-large {
+    @apply text-3xl font-bold text-gray-900 mb-2;
+  }
+
+  .title-medium {
+    @apply text-xl font-bold text-gray-900 mb-2;
+  }
+
+  .text-readable {
+    @apply text-lg text-gray-700 leading-relaxed;
+  }
+
+  .text-small {
+    @apply text-base text-gray-600;
+  }
+
+  /* Status Indicators - High Contrast */
   .status-open {
-    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 px-3 py-1 rounded-full text-xs font-medium;
+    @apply bg-green-500 text-white px-4 py-2 rounded-full text-base font-bold;
   }
 
   .status-closed {
-    @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 px-3 py-1 rounded-full text-xs font-medium;
+    @apply bg-red-500 text-white px-4 py-2 rounded-full text-base font-bold;
   }
 
   .status-busy {
-    @apply bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 px-3 py-1 rounded-full text-xs font-medium;
+    @apply bg-orange-500 text-white px-4 py-2 rounded-full text-base font-bold;
   }
 
-  /* Special Effects */
-  .glass-effect {
-    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  /* Section Headers - Clean and Clear */
+  .section-header-clean {
+    @apply bg-gray-50 p-6 rounded-2xl border border-gray-200 mb-6;
   }
 
-  .gradient-border {
-    @apply relative before:absolute before:inset-0 before:p-[1px] before:bg-gradient-to-r before:from-primary before:to-accent before:rounded-xl before:-z-10;
+  .section-title-clean {
+    @apply text-2xl font-bold text-gray-900;
   }
 
-  .floating-action {
-    @apply fixed bottom-20 right-4 z-50 bg-primary text-primary-foreground p-4 rounded-full shadow-[var(--shadow-strong)] hover:shadow-[0_12px_40px_-12px_hsl(262_90%_50%_/_0.4)] transition-all duration-300 hover:scale-110;
+  .section-subtitle-clean {
+    @apply text-lg text-gray-600 mt-2;
   }
 
-  /* Animations */
-  .fade-in {
-    @apply animate-fade-in;
+  /* High Contrast Cards for Important Actions */
+  .action-card-blue {
+    @apply bg-blue-500 text-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-200;
   }
 
-  .slide-up {
-    @apply transform translate-y-4 opacity-0 transition-all duration-500 ease-out;
+  .action-card-green {
+    @apply bg-green-500 text-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-200;
   }
 
-  .slide-up.visible {
-    @apply translate-y-0 opacity-100;
+  .action-card-red {
+    @apply bg-red-500 text-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-200;
+  }
+
+  /* Simple Layout */
+  .page-container-clean {
+    @apply container mx-auto px-4 py-6 max-w-6xl min-h-screen bg-gray-50;
+  }
+
+  /* Floating Action Button - Always Visible */
+  .floating-action-clean {
+    @apply fixed bottom-24 right-6 z-50 w-16 h-16 bg-blue-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center hover:scale-110;
   }
 }

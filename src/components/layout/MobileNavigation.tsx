@@ -22,56 +22,76 @@ const MobileNavigation = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t border-border z-50">
-      <div className="grid grid-cols-5 gap-1 px-2 py-1">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t-4 border-blue-500 shadow-lg z-50">
+      <div className="grid grid-cols-5 gap-1 p-2">
         <Link
           to="/"
           className={`nav-item ${
-            isActive('/') ? 'nav-item-active' : 'text-muted-foreground hover:text-foreground'
+            isActive('/') ? 'nav-item-active' : 'text-gray-600 hover:text-blue-600'
           }`}
         >
-          <Home className="h-5 w-5" />
-          <span className="text-xs mt-1 font-medium">Home</span>
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-1 ${
+            isActive('/') ? 'bg-blue-500 text-white' : 'bg-gray-100'
+          }`}>
+            <Home className="h-7 w-7" />
+          </div>
+          <span className="text-sm font-bold">Home</span>
         </Link>
 
         <Link
           to="/services"
           className={`nav-item ${
-            isActive('/services') ? 'nav-item-active' : 'text-muted-foreground hover:text-foreground'
+            isActive('/services') ? 'nav-item-active' : 'text-gray-600 hover:text-blue-600'
           }`}
         >
-          <Wrench className="h-5 w-5" />
-          <span className="text-xs mt-1 font-medium">Services</span>
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-1 ${
+            isActive('/services') ? 'bg-blue-500 text-white' : 'bg-gray-100'
+          }`}>
+            <Wrench className="h-7 w-7" />
+          </div>
+          <span className="text-sm font-bold">Services</span>
         </Link>
 
         <Link
           to="/sos"
           className={`nav-item ${
-            isActive('/sos') ? 'nav-item-active' : 'text-muted-foreground hover:text-foreground'
+            isActive('/sos') ? 'nav-item-active' : 'text-gray-600 hover:text-red-600'
           }`}
         >
-          <Shield className="h-5 w-5" />
-          <span className="text-xs mt-1 font-medium">SOS</span>
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-1 ${
+            isActive('/sos') ? 'bg-red-500 text-white' : 'bg-red-100'
+          }`}>
+            <Shield className="h-7 w-7" />
+          </div>
+          <span className="text-sm font-bold text-red-600">SOS</span>
         </Link>
 
         <Link
           to="/spare-parts"
           className={`nav-item ${
-            isActive('/spare-parts') ? 'nav-item-active' : 'text-muted-foreground hover:text-foreground'
+            isActive('/spare-parts') ? 'nav-item-active' : 'text-gray-600 hover:text-green-600'
           }`}
         >
-          <ShoppingCart className="h-5 w-5" />
-          <span className="text-xs mt-1 font-medium">Parts</span>
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-1 ${
+            isActive('/spare-parts') ? 'bg-green-500 text-white' : 'bg-gray-100'
+          }`}>
+            <ShoppingCart className="h-7 w-7" />
+          </div>
+          <span className="text-sm font-bold">Parts</span>
         </Link>
 
         <Link
           to="/profile"
           className={`nav-item ${
-            isActive('/profile') ? 'nav-item-active' : 'text-muted-foreground hover:text-foreground'
+            isActive('/profile') ? 'nav-item-active' : 'text-gray-600 hover:text-purple-600'
           }`}
         >
-          <User className="h-5 w-5" />
-          <span className="text-xs mt-1 font-medium">Profile</span>
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-1 ${
+            isActive('/profile') ? 'bg-purple-500 text-white' : 'bg-gray-100'
+          }`}>
+            <User className="h-7 w-7" />
+          </div>
+          <span className="text-sm font-bold">Profile</span>
         </Link>
       </div>
     </div>

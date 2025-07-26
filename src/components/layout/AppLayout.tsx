@@ -25,7 +25,7 @@ const AppLayout = ({
   onBack,
 }: AppLayoutProps) => {
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-background via-secondary/20 to-accent/10">
+    <div className="min-h-screen bg-gray-50">
       <Header
         title={title}
         showBackButton={showBackButton}
@@ -34,8 +34,8 @@ const AppLayout = ({
         showSearch={showSearch}
         onBack={onBack}
       />
-      <main className="flex-1 pb-20 px-4">
-        <div className="max-w-7xl mx-auto">
+      <main className="pb-20">
+        <div className="page-container-clean">
           {children}
         </div>
       </main>
